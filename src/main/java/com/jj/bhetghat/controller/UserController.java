@@ -1,5 +1,6 @@
 package com.jj.bhetghat.controller;
 
+import com.jj.bhetghat.model.Event;
 import com.jj.bhetghat.model.User;
 import com.jj.bhetghat.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -34,4 +35,10 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+    @GetMapping("/{id}/events")
+    public List<Event> getEventsByUser(@PathVariable Long id) {
+        return userService.getEventsHostedByUser(id);
+    }
+
 }

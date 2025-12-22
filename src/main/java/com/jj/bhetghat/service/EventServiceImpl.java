@@ -21,7 +21,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event getEventById(Long id) {
-        return eventRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
     }
 
     @Override
@@ -31,6 +31,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void deleteEvent(Long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new RuntimeException("Event not found");
+        }
         eventRepository.deleteById(id);
     }
+
 }

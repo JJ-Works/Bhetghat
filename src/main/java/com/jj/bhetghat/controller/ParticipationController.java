@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -26,21 +27,27 @@ public class ParticipationController {
     private EventRepository eventRepository;
 
     // Add a participant
-    @PostMapping("/add")
-    public EventParticipant addParticipant(@RequestParam Long userId, @RequestParam Long eventId) {
-        Optional<User> userOpt = userRepository.findById(userId);
-        Optional<Event> eventOpt = eventRepository.findById(eventId);
+    @PostMapping("/events/{eventId}/join")
+    public EventParticipant joinEvent(@PathVariable Long eventId, @RequestBody Map<String, Long> request) {
+        Long userId = request.get("userId");
 
-        if (userOpt.isEmpty() || eventOpt.isEmpty()) {
-            throw new RuntimeException("User or Event not found");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        // Check if the event is already full
+        if (event.getParticipants() != null && event.getParticipants().size() >= event.getMaxParticipants()) {
+            throw new RuntimeException("Event is full");
         }
 
         EventParticipant participant = new EventParticipant();
-        participant.setUser(userOpt.get());
-        participant.setEvent(eventOpt.get());
+        participant.setUser(user);
+        participant.setEvent(event);
 
         return participationRepository.save(participant);
     }
+
 
     // Get participants of an event
     @GetMapping("/event/{eventId}")
