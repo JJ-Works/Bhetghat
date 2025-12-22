@@ -1,4 +1,4 @@
-package com.jj.Bhetghat.model;
+package com.jj.bhetghat.model;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
-package com.jj.Bhetghat.repository;
+package com.jj.bhetghat.repository;
 
-import com.jj.Bhetghat.model.Event;
-import com.jj.Bhetghat.model.User;
+import com.jj.bhetghat.model.Event;
+import com.jj.bhetghat.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

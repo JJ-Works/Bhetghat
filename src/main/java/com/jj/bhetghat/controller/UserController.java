@@ -1,7 +1,7 @@
-package com.jj.Bhetghat.controller;
+package com.jj.bhetghat.controller;
 
-import com.jj.Bhetghat.model.User;
-import com.jj.Bhetghat.service.UserService;
+import com.jj.bhetghat.model.User;
+import com.jj.bhetghat.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

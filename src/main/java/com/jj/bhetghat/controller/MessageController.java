@@ -1,11 +1,11 @@
-package com.jj.Bhetghat.controller;
+package com.jj.bhetghat.controller;
 
-import com.jj.Bhetghat.model.Message;
-import com.jj.Bhetghat.model.Event;
-import com.jj.Bhetghat.model.User;
-import com.jj.Bhetghat.service.MessageService;
-import com.jj.Bhetghat.service.EventService;
-import com.jj.Bhetghat.service.UserService;
+import com.jj.bhetghat.model.Message;
+import com.jj.bhetghat.model.Event;
+import com.jj.bhetghat.model.User;
+import com.jj.bhetghat.service.MessageService;
+import com.jj.bhetghat.service.EventService;
+import com.jj.bhetghat.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.jj.Bhetghat.service;
+package com.jj.bhetghat.service;
 
-import com.jj.Bhetghat.model.Event;
+import com.jj.bhetghat.model.Event;
 import java.util.List;
 
 public interface EventService {

@@ -1,7 +1,7 @@
-package com.jj.Bhetghat.service;
+package com.jj.bhetghat.service;
 
-import com.jj.Bhetghat.model.Event;
-import com.jj.Bhetghat.repository.EventRepository;
+import com.jj.bhetghat.model.Event;
+import com.jj.bhetghat.repository.EventRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event getEventById(Long id) {
-        return eventRepository.findById(id).orElse(null);
+        return eventRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

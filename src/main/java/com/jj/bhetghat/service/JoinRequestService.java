@@ -1,6 +1,6 @@
-package com.jj.Bhetghat.service;
+package com.jj.bhetghat.service;
 
-import com.jj.Bhetghat.model.JoinRequest;
+import com.jj.bhetghat.model.JoinRequest;
 import java.util.List;
 
 public interface JoinRequestService {

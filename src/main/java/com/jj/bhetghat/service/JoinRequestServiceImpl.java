@@ -1,8 +1,8 @@
-package com.jj.Bhetghat.service;
+package com.jj.bhetghat.service;
 
-import com.jj.Bhetghat.model.JoinRequest;
-import com.jj.Bhetghat.repository.JoinRequestRepository;
-import com.jj.Bhetghat.repository.EventRepository;
+import com.jj.bhetghat.model.JoinRequest;
+import com.jj.bhetghat.repository.JoinRequestRepository;
+import com.jj.bhetghat.repository.EventRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
     @Override
     public void rejectRequest(Long requestId) {
-        JoinRequest request = joinRequestRepository.findById(requestId).orElse(null);
+        JoinRequest request = joinRequestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("User not found"));
         if (request != null) {
             request.setStatus("REJECTED");
             joinRequestRepository.save(request);

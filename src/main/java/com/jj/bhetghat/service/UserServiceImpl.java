@@ -1,7 +1,7 @@
-package com.jj.Bhetghat.service;
+package com.jj.bhetghat.service;
 
-import com.jj.Bhetghat.model.User;
-import com.jj.Bhetghat.repository.UserRepository;
+import com.jj.bhetghat.model.User;
+import com.jj.bhetghat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

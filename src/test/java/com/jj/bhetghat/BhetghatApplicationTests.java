@@ -1,4 +1,4 @@
-package com.jj.Bhetghat;
+package com.jj.bhetghat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

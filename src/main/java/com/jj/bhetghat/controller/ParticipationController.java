@@ -1,11 +1,11 @@
-package com.jj.Bhetghat.controller;
+package com.jj.bhetghat.controller;
 
-import com.jj.Bhetghat.model.Event;
-import com.jj.Bhetghat.model.EventParticipant;
-import com.jj.Bhetghat.model.User;
-import com.jj.Bhetghat.repository.EventRepository;
-import com.jj.Bhetghat.repository.ParticipationRepository;
-import com.jj.Bhetghat.repository.UserRepository;
+import com.jj.bhetghat.model.Event;
+import com.jj.bhetghat.model.EventParticipant;
+import com.jj.bhetghat.model.User;
+import com.jj.bhetghat.repository.EventRepository;
+import com.jj.bhetghat.repository.ParticipationRepository;
+import com.jj.bhetghat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

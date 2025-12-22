@@ -1,4 +1,4 @@
-package com.jj.Bhetghat;
+package com.jj.bhetghat;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

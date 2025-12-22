@@ -1,7 +1,7 @@
-package com.jj.Bhetghat.service;
+package com.jj.bhetghat.service;
 
-import com.jj.Bhetghat.model.Message;
-import com.jj.Bhetghat.repository.MessageRepository;
+import com.jj.bhetghat.model.Message;
+import com.jj.bhetghat.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

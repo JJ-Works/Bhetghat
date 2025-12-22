@@ -1,6 +1,6 @@
-package com.jj.Bhetghat.repository;
+package com.jj.bhetghat.repository;
 
-import com.jj.Bhetghat.model.Message;
+import com.jj.bhetghat.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
