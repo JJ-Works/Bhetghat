@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.jj</groupId>
-	<artifactId>Bhetghat</artifactId>
+	<artifactId>Eventify</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Bhetghat</name>
 	<description>This is a project where users can interact with others with same interests and passion.</description>
