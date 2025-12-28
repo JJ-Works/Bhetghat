@@ -3,76 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventify - Event Management Platform</title>
+    <meta name="description" content="Eventify - Discover and join amazing events">
+    <title>Eventify</title>
     <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/cards.css">
 </head>
 <body>
-    <nav class="navbar">
+    <header class="navbar">
         <div class="navbar-container">
             <!-- Logo -->
-            <div class="navbar-logo">
+            <a href="index.html" class="navbar-logo" aria-label="Eventify Home">
                 <div class="logo-placeholder">img1</div>
-            </div>
+            </a>
 
             <!-- Search Bar -->
-            <div class="navbar-search">
+            <form class="navbar-search" onsubmit="performSearch(event)">
                 <input 
-                    type="text" 
+                    type="search" 
                     class="search-input" 
                     placeholder="Search events..."
                     id="searchInput"
+                    aria-label="Search events"
                 >
-                <button class="search-btn" id="searchBtn">
-                    <span>🔍</span>
+                <button type="submit" class="search-btn" aria-label="Search">
+                    <span aria-hidden="true">🔍</span>
                 </button>
-            </div>
+            </form>
 
             <!-- Auth Section -->
             <div class="navbar-auth">
-                <button class="auth-btn login-btn" id="loginBtn">Login</button>
+                <button class="auth-btn login-btn" id="loginBtn" style="display: block;">Login</button>
                 <div class="profile-section" id="profileSection" style="display: none;">
-                    <img src="assets/icons/default-avatar.png" alt="Profile" class="profile-avatar" id="profileAvatar">
-                    <div class="profile-dropdown">
-                        <a href="pages/profile.html" class="dropdown-item">My Profile</a>
-                        <a href="pages/create-event.html" class="dropdown-item">Create Event</a>
-                        <a href="#" class="dropdown-item">Settings</a>
-                        <hr class="dropdown-divider">
-                        <button class="dropdown-item logout-btn" id="logoutBtn">Logout</button>
-                    </div>
+                    <button class="profile-avatar-btn" id="profileAvatarBtn" aria-label="Open profile menu" aria-haspopup="true" aria-expanded="false">
+                        <img src="assets/icons/default-avatar.png" alt="User profile picture" class="profile-avatar" id="profileAvatar">
+                    </button>
+                    <nav class="profile-dropdown" aria-label="Profile menu">
+                        <ul>
+                            <li><a href="pages/profile.html" class="dropdown-item">My Profile</a></li>
+                            <li><a href="pages/create-event.html" class="dropdown-item">Create Event</a></li>
+                            <li><a href="#settings" class="dropdown-item">Settings</a></li>
+                        </ul>
+                        <hr class="dropdown-divider" aria-hidden="true">
+                        <ul>
+                            <li><button class="dropdown-item logout-btn" id="logoutBtn">Logout</button></li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <footer class="footer">
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Discover Amazing Events</h1>
+                <p>Find, explore, and join events happening around you. Connect with people who share your interests.</p>
+                <a href="pages/explore.html" class="hero-btn">Explore Events</a>
+            </div>
+        </section>
+
+        <!-- Recommendations Section -->
+        <section class="recommendations">
+            <div class="recommendations-container">
+                <div class="section-header">
+                    <h2>Recommended Events</h2>
+                    <p>Events tailored just for you</p>
+                </div>
+                <div class="events-grid" id="eventsGrid">
+                    <!-- Cards will be loaded here by JavaScript -->
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer" role="contentinfo">
         <div class="footer-container">
-            <div class="footer-section">
-                <h4>Eventify</h4>
+            <section class="footer-section">
+                <h2>Eventify</h2>
                 <p>Discover and join amazing events.</p>
-            </div>
-            <div class="footer-section">
-                <h5>Quick Links</h5>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="pages/explore.html">Explore</a></li>
-                    <li><a href="#about">About</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h5>Follow Us</h5>
-                <ul>
-                    <li><a href="#facebook">Facebook</a></li>
-                    <li><a href="#twitter">Twitter</a></li>
-                    <li><a href="#instagram">Instagram</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h5>Legal</h5>
-                <ul>
-                    <li><a href="#privacy">Privacy Policy</a></li>
-                    <li><a href="#terms">Terms of Service</a></li>
-                </ul>
-            </div>
+            </section>
+            <section class="footer-section">
+                <h3>Quick Links</h3>
+                <nav aria-label="Quick links">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="pages/explore.html">Explore</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </nav>
+            </section>
+            <section class="footer-section">
+                <h3>Follow Us</h3>
+                <nav aria-label="Social media links">
+                    <ul>
+                        <li><a href="#facebook" title="Visit our Facebook page">Facebook</a></li>
+                        <li><a href="#twitter" title="Visit our Twitter profile">Twitter</a></li>
+                        <li><a href="#instagram" title="Visit our Instagram profile">Instagram</a></li>
+                    </ul>
+                </nav>
+            </section>
+            <section class="footer-section">
+                <h3>Legal</h3>
+                <nav aria-label="Legal links">
+                    <ul>
+                        <li><a href="#privacy">Privacy Policy</a></li>
+                        <li><a href="#terms">Terms of Service</a></li>
+                    </ul>
+                </nav>
+            </section>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 Eventify. All rights reserved.</p>
@@ -80,5 +125,6 @@
     </footer>
 
     <script src="js/navbar.js"></script>
+    <script src="js/recommendations.js"></script>
 </body>
 </html>
