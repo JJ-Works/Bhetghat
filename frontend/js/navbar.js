@@ -16,14 +16,14 @@ function checkAuthStatus() {
     if (token && userId) {
         // User is logged in
         console.log('User is logged in');
-        loginBtn.style.display = 'none';
-        profileSection.style.display = 'flex';
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (profileSection) profileSection.style.display = 'flex';
         loadUserProfile();
     } else {
         // User is NOT logged in
         console.log('User is NOT logged in');
-        loginBtn.style.display = 'block';
-        profileSection.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'block';
+        if (profileSection) profileSection.style.display = 'none';
     }
 }
 
@@ -38,6 +38,9 @@ function loadUserProfile() {
 function setupAuthListeners() {
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
+    const profileAvatarBtn = document.getElementById('profileAvatarBtn');
+    const profileSection = document.getElementById('profileSection');
+    const profileDropdown = document.querySelector('.profile-dropdown');
 
     // Login button click
     if (loginBtn) {
@@ -45,6 +48,23 @@ function setupAuthListeners() {
             window.location.href = 'pages/login.html';
         });
     }
+
+    // Profile avatar button click - toggle dropdown
+    if (profileAvatarBtn) {
+        profileAvatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (profileDropdown) {
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (profileSection && profileDropdown && !profileSection.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+        }
+    });
 
     // Logout button click
     if (logoutBtn) {

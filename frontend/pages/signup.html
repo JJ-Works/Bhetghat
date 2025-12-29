@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign up for Eventify and start discovering amazing events">
+    <title>Sign Up - Eventify</title>
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Join Eventify</h1>
+                <p>Create your account to get started</p>
+            </div>
+
+            <form class="auth-form" id="signupForm">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        class="form-input" 
+                        placeholder="Enter your full name"
+                        required
+                        aria-label="Full name"
+                    >
+                    <span class="error-message" id="nameError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                        aria-label="Email address"
+                    >
+                    <span class="error-message" id="emailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-input" 
+                        placeholder="Create a password (min 6 characters)"
+                        required
+                        aria-label="Password"
+                    >
+                    <span class="error-message" id="passwordError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        class="form-input" 
+                        placeholder="Confirm your password"
+                        required
+                        aria-label="Confirm password"
+                    >
+                    <span class="error-message" id="confirmPasswordError"></span>
+                </div>
+
+                <button type="submit" class="auth-btn" id="signupSubmitBtn">Sign Up</button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html" class="auth-link">Login here</a></p>
+            </div>
+
+            <div class="form-message" id="formMessage"></div>
+        </div>
+    </div>
+
+    <script src="../js/navbar.js"></script>
+    <script>
+        // Handle signup form submission
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const formMessage = document.getElementById('formMessage');
+            const submitBtn = document.getElementById('signupSubmitBtn');
+
+            // Clear previous messages
+            formMessage.textContent = '';
+            formMessage.className = 'form-message';
+            document.getElementById('nameError').textContent = '';
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            document.getElementById('confirmPasswordError').textContent = '';
+
+            // Validation
+            let hasError = false;
+
+            if (!name) {
+                document.getElementById('nameError').textContent = 'Full name is required';
+                hasError = true;
+            }
+
+            if (!email) {
+                document.getElementById('emailError').textContent = 'Email is required';
+                hasError = true;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email';
+                hasError = true;
+            }
+
+            if (!password) {
+                document.getElementById('passwordError').textContent = 'Password is required';
+                hasError = true;
+            } else if (password.length < 6) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters';
+                hasError = true;
+            }
+
+            if (!confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Please confirm your password';
+                hasError = true;
+            } else if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match';
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Creating account...';
+
+                // Make signup request to backend
+                const response = await fetch('http://localhost:8080/users/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: name,
+                        email: email,
+                        password: password,
+                        name: name
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.id) {
+                    // Signup successful
+                    formMessage.textContent = 'Account created successfully! Redirecting to login...';
+                    formMessage.className = 'form-message success';
+
+                    // Redirect to login page after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    // Signup failed
+                    let errorMessage = 'Sign up failed. Please try again.';
+                    
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (data.error) {
+                        errorMessage = data.error;
+                    } else if (response.status === 400) {
+                        errorMessage = 'Invalid input. Please check your details.';
+                    } else if (response.status === 409) {
+                        errorMessage = 'This email is already registered.';
+                    }
+
+                    formMessage.textContent = errorMessage;
+                    formMessage.className = 'form-message error';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                formMessage.textContent = 'Unable to connect to the server. Please try again later.';
+                formMessage.className = 'form-message error';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign Up';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -24,21 +24,32 @@ async function loadRecommendations() {
             throw new Error(`Failed to fetch events: ${response.status}`);
         }
 
-        let events = await response.json();
-        console.log('Raw response:', events);
-        
-        // Handle if response is wrapped in an object
-        if (events.content) {
-            events = events.content; // For paginated responses
+        let responseData = await response.json();
+        console.log('Parsed Events (raw):', responseData);
+
+        let processedEvents = [];
+        if (typeof responseData === 'object' && responseData !== null && Array.isArray(responseData.content)) {
+            processedEvents = responseData.content;
+            console.log('Unwrapped events from "content" property:', processedEvents);
+        } else if (Array.isArray(responseData)) {
+            processedEvents = responseData;
+            console.log('Direct array of events:', processedEvents);
+        } else {
+            console.warn('API response is not a recognized event array or paginated object, got:', typeof responseData, responseData);
+            processedEvents = [];
         }
-        if (!Array.isArray(events)) {
-            console.warn('Events is not an array, got:', typeof events);
-            events = [];
-        }
+
+        let events = processedEvents;
         
-        // Limit to 4 events for landing page
-        events = events.slice(0, 4);
-        console.log('Processed events (limited to 4):', events);
+        if (events.length === 0) {
+            console.log('No events received from API after processing.');
+            eventsGrid.innerHTML = '<p class="error-message">No events found. Check back soon!</p>';
+            return;
+        }
+
+        // Limit to 4 events for landing page (changed to 6 previously)
+        events = events.slice(0, 6);
+        console.log('Processed events (limited to 6):', events);
         
         // Clear skeleton loaders
         eventsGrid.innerHTML = '';
@@ -74,52 +85,34 @@ function createEventCard(event) {
     
     const formattedDate = formatDate(event.eventDate);
     const formattedTime = formatTime(event.eventDate);
-    const participantCount = event.participants?.length || 0;
     
     console.log('Event details:', {
         title: event.title,
         date: formattedDate,
         time: formattedTime,
-        participants: participantCount,
         category: event.category
     });
     
     card.innerHTML = `
-        <div class="event-card-image" style="background-color: ${randomColor}; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; font-weight: bold;">
-            ${event.category?.charAt(0).toUpperCase() || '📅'}
+        <img src="assets/bgforcards.jpg" alt="Event Image" class="event-card-image">
+        <div class="event-card-body">
+            <p class="event-card-date-small">${formattedDate}</p>
+            <h3 class="event-card-title-new">${escapeHtml(event.title)}</h3>
         </div>
-        <div class="event-card-content">
-            <div class="event-card-header">
-                <h3 class="event-card-title">${escapeHtml(event.title)}</h3>
-                <span class="event-card-category">${escapeHtml(event.category || 'Event')}</span>
-            </div>
-            
-            <div class="event-card-meta">
-                <div class="event-card-meta-item">
-                    <span class="event-card-meta-icon">📅</span>
-                    <span>${formattedDate}</span>
-                </div>
-                <div class="event-card-meta-item">
-                    <span class="event-card-meta-icon">🕐</span>
-                    <span>${formattedTime}</span>
-                </div>
-                <div class="event-card-meta-item">
-                    <span class="event-card-meta-icon">📍</span>
-                    <span>${escapeHtml(event.location || 'Location TBA')}</span>
-                </div>
-            </div>
-            
-            <p class="event-card-description">${escapeHtml(event.description || 'No description available')}</p>
-            
-            <div class="event-card-footer">
-                <div class="event-card-attendees">
-                    <div class="event-card-avatar">${participantCount > 99 ? '99+' : participantCount}</div>
-                    <span>${participantCount} ${participantCount === 1 ? 'participant' : 'participants'}</span>
-                </div>
-                <a href="pages/event-details.html?id=${event.id}" class="event-card-link">View Details</a>
-            </div>
-        </div>
+        <a href="pages/event-details.html?id=${event.id}" class="view-details-btn">View Details</a>
     `;
+    
+    card.addEventListener('click', (e) => {
+        // Only navigate if the click is not on the button itself
+        if (!e.target.classList.contains('view-details-btn')) {
+            window.location.href = `pages/event-details.html?id=${event.id}`;
+        }
+    });
+    
+    // Prevent the button's click from also triggering the card's click event
+    card.querySelector('.view-details-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
     
     return card;
 }

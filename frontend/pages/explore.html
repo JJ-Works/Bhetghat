@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore and discover amazing events">
+    <title>Explore Events - Eventify</title>
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/cards.css">
+    <link rel="stylesheet" href="../css/explore.css">
+    <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <a href="../index.html" class="navbar-logo" aria-label="Eventify Home">
+                <div class="logo-text">Eventify</div>
+            </a>
+
+            <!-- Search Bar -->
+            <form class="navbar-search" onsubmit="performSearch(event)">
+                <input 
+                    type="search" 
+                    class="search-input" 
+                    placeholder="Search events..."
+                    id="searchInput"
+                    aria-label="Search events"
+                >
+                <button type="submit" class="search-btn" aria-label="Search">
+                    <img src="../assets/icons/search_5186446.png" alt="Search" />
+                </button>            </form>
+
+            <!-- Auth Section -->
+            <div class="navbar-auth">
+                <button class="auth-btn login-btn" id="loginBtn" style="display: block;">Login</button>
+                <div class="profile-section" id="profileSection" style="display: none;">
+                    <button class="profile-avatar-btn" id="profileAvatarBtn" aria-label="Open profile menu" aria-haspopup="true" aria-expanded="false">
+                        <div class="profile-avatar" id="profileAvatar"></div>
+                    </button>
+                    <nav class="profile-dropdown" aria-label="Profile menu">
+                        <ul>
+                            <li><a href="profile.html" class="dropdown-item">My Profile</a></li>
+                            <li><a href="create-event.html" class="dropdown-item">Create Event</a></li>
+                            <li><a href="my-events.html" class="dropdown-item">My Events</a></li>
+                            <li><a href="#settings" class="dropdown-item">Settings</a></li>
+                        </ul>
+                        <hr class="dropdown-divider" aria-hidden="true">
+                        <ul>
+                            <li><button class="dropdown-item logout-btn" id="logoutBtn">Logout</button></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="explore-hero">
+            <div class="explore-hero-content">
+                <h1 id="exploreTitle">Events</h1>
+                <p>Discover and join amazing events happening around you</p>
+            </div>
+        </section>
+
+        <!-- Explore Controls -->
+        <section class="explore-controls">
+            <div class="controls-container">
+                <a href="create-event.html" class="create-event-link" id="createEventBtn">
+                    <img src="../assets/icons/image.png" alt=""> Create Event
+                </a>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">All Events</button>
+                    <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+                    <button class="filter-btn" data-filter="popular">Popular</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Grid -->
+        <section class="events-section">
+            <div class="events-container">
+                <div class="events-grid" id="eventsGrid">
+                    <!-- Cards will be loaded here by JavaScript -->
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- No Results Message -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <h2>No events found</h2>
+            <p>Try adjusting your search or filters</p>
+        </div>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <div class="footer-container">
+            <section class="footer-section">
+                <h2>Eventify</h2>
+                <p>Discover and join amazing events.</p>
+            </section>
+            <section class="footer-section">
+                <h3>Quick Links</h3>
+                <nav aria-label="Quick links">
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="explore.html">Explore</a></li>
+                        <li><a href="#about">About</a></li>
+                    </ul>
+                </nav>
+            </section>
+        </div>
+    </footer>
+
+    <script src="../js/navbar.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        let allEvents = [];
+        let filteredEvents = [];
+
+        // Load events on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Explore page loaded');
+            loadAllEvents();
+            setupFilterButtons();
+            setupCreateEventButton();
+        });
+
+        async function loadAllEvents() {
+            try {
+                console.log('Fetching events from: http://localhost:8080/events/all');
+                const response = await fetch('http://localhost:8080/events/all');
+                console.log('API Response Status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Failed to load events. Response:', errorText);
+                    showNoResults();
+                    return;
+                }
+
+                let responseData = await response.json();
+                console.log('Parsed Events (raw):', responseData);
+
+                let processedEvents = [];
+                if (typeof responseData === 'object' && responseData !== null && Array.isArray(responseData.content)) {
+                    processedEvents = responseData.content;
+                    console.log('Unwrapped events from "content" property:', processedEvents);
+                } else if (Array.isArray(responseData)) {
+                    processedEvents = responseData;
+                    console.log('Direct array of events:', processedEvents);
+                } else {
+                    console.warn('API response is not a recognized event array or paginated object, got:', typeof responseData, responseData);
+                    processedEvents = [];
+                }
+
+                allEvents = processedEvents;
+                
+                if (allEvents.length === 0) {
+                    console.log('No events received from API after processing.');
+                    showNoResults();
+                    return;
+                }
+
+
+                filteredEvents = [...allEvents];
+                displayEvents(filteredEvents);
+                console.log('Events loaded and displayed:', allEvents.length);
+
+            } catch (error) {
+                console.error('Error loading events:', error);
+                showNoResults();
+            }
+        }
+
+        function displayEvents(events) {
+            const grid = document.getElementById('eventsGrid');
+            const noResults = document.getElementById('noResults');
+
+            if (events.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            grid.innerHTML = events.map(event => {
+                const formattedDate = formatDate(event.eventDate);
+                return `
+                    <div class="event-card" data-event-id="${event.id}">
+                        <img src="../assets/bgforcards.jpg" alt="Event Image" class="event-card-image">
+                        <div class="event-card-body">
+                            <p class="event-card-date-small">${formattedDate}</p>
+                            <h3 class="event-card-title-new">${escapeHtml(event.title || 'Untitled Event')}</h3>
+                        </div>
+                        <a href="event-details.html?id=${event.id}" class="view-details-btn">View Details</a>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click functionality to the entire event card
+            document.querySelectorAll('.event-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Only navigate if the click is not on the button itself
+                    if (!e.target.classList.contains('view-details-btn')) {
+                        const eventId = card.dataset.eventId;
+                        if (eventId) {
+                            window.location.href = `event-details.html?id=${eventId}`;
+                        }
+                    }
+                });
+                // Prevent the button's click from also triggering the card's click event
+                const viewDetailsBtn = card.querySelector('.view-details-btn');
+                if (viewDetailsBtn) {
+                    viewDetailsBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+                }
+            });
+
+            // Remove like button functionality as it's not part of the new card design
+            // document.querySelectorAll('.like-btn').forEach(btn => {
+            //     btn.addEventListener('click', function(e) {
+            //         e.preventDefault();
+            //         this.classList.toggle('liked');
+            //     });
+            // });
+        }
+
+        function performSearch(e) {
+            e.preventDefault();
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            // Update the title with search query
+            const title = document.getElementById('exploreTitle');
+            if (searchQuery) {
+                title.textContent = `${searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1)} Events`;
+            } else {
+                title.textContent = 'Events';
+            }
+
+            // Filter events based on search query
+            if (searchQuery) {
+                filteredEvents = allEvents.filter(event => 
+                    event.title?.toLowerCase().includes(searchQuery) ||
+                    event.description?.toLowerCase().includes(searchQuery) ||
+                    event.location?.toLowerCase().includes(searchQuery)
+                );
+            } else {
+                filteredEvents = [...allEvents];
+            }
+
+            displayEvents(filteredEvents);
+        }
+
+        function setupFilterButtons() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+
+                    const filter = this.dataset.filter;
+                    
+                    if (filter === 'all') {
+                        filteredEvents = [...allEvents];
+                    } else if (filter === 'upcoming') {
+                        // Filter for upcoming events (you can modify based on your date format)
+                        filteredEvents = allEvents.filter(event => event.status === 'upcoming' || !event.status);
+                    } else if (filter === 'popular') {
+                        // Filter for popular events (based on participant count)
+                        filteredEvents = [...allEvents].sort((a, b) => 
+                            (b.participantCount || 0) - (a.participantCount || 0)
+                        );
+                    }
+
+                    displayEvents(filteredEvents);
+                });
+            });
+        }
+
+        function setupCreateEventButton() {
+            const createBtn = document.getElementById('createEventBtn');
+            if (createBtn) {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    // If not logged in, redirect to login
+                    createBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.href = 'login.html';
+                    });
+                }
+            }
+        }
+
+        function showNoResults() {
+            document.getElementById('eventsGrid').innerHTML = '';
+            document.getElementById('noResults').style.display = 'block';
+        }
+
+        // Handle search on Enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchForm = document.querySelector('.navbar-search');
+            if (searchForm) {
+                searchForm.addEventListener('submit', performSearch);
+            }
+        });
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateTimeString) {
+            if (!dateTimeString) return 'Date TBA';
+            try {
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateTimeString).toLocaleDateString('en-US', options);
+            } catch (e) {
+                console.warn('Date format error:', e);
+                return 'Date TBA';
+            }
+        }
+    </script>
+</body>
+</html>
