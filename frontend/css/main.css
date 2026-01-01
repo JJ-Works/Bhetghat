@@ -5,13 +5,22 @@
     font-style: normal;
 }
 
+:root {
+    --neumorphic-bg: #e0e5ec; /* Soft neutral background */
+    --neumorphic-shadow-dark: #a3b1c6; /* Darker shadow */
+    --neumorphic-shadow-light: #ffffff; /* Lighter shadow/highlight */
+    --text-color: #333; /* Darker text for contrast */
+}
+
 html, body {
     height: 100%;
     margin: 0;
+    font-family: 'Open Sans', sans-serif;
+    color: var(--text-color);
+    background-color: var(--neumorphic-bg); /* Apply global neumorphic background */
 }
 
 body {
-    font-family: 'Open Sans', sans-serif; /* Apply Open Sans to body */
     display: flex;
     flex-direction: column;
 }
@@ -19,3 +28,4 @@ body {
 main {
     flex: 1; /* This will make the main content grow and push the footer down */
 }
+

@@ -1,144 +1,162 @@
 /* Event Cards */
 .event-card {
-    background: rgba(73, 66, 66, 0.897); /* Changed from white for glassmorphic effect */
-    backdrop-filter: blur(10px); /* Added blur for glassmorphic effect */
-    -webkit-backdrop-filter: blur(10px); /* For Safari support */
+       box-shadow:
+        /* Outer shadows */
+        5px 5px 10px var(--neumorphic-shadow-dark), /* Dark shadow */
+        -5px -5px 10px var(--neumorphic-shadow-light), /* Light shadow */
+        /* Inner shadow for pressed effect if needed, but for raised it's often just outer */
+        inset 2px 2px 5px var(--neumorphic-shadow-dark),
+        inset -2px -2px 5px var(--neumorphic-shadow-light);/* Use global neumorphic background */
     border-radius: 1.5rem;
     overflow: hidden;
-    box-shadow: 4px 4px 3px rgba(236, 233, 233, 0.615);
-    transition: transform 0.3s ease, box-shadow 0.5s ease;
+    
+    /* Neumorphic shadow effect: light on top-left, dark on bottom-right for a raised look */
+    /* box-shadow: 
+        5px 5px 10px var(--neumorphic-shadow-dark), 
+        -5px -5px 10px var(--neumorphic-shadow-light); */
+    
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smoother transition for hover */
     display: flex;
     flex-direction: column;
-    min-height: 400px; /* Increased height of the card */
-    animation: slideIn 0.5s ease-out forwards;
-    opacity: 0;
-    position: relative; /* Added for positioning the button */
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    min-height: 400px; /* Maintain card height */
+    position: relative; /* Needed for absolute positioning of the button */
+    border: none; /* Remove explicit border */
 }
 
 .event-card:hover {
-    transform: translateY(-8px);
-     box-shadow: 10px 18px 12px rgba(0, 0, 0, 0.15);
-    
+    transform: translateY(-5px); /* Subtle lift on hover */
+    box-shadow: 
+        /* Slightly deeper shadows on hover */
+        8px 8px 15px var(--neumorphic-shadow-dark), 
+        -8px -8px 15px var(--neumorphic-shadow-light);
 }
 
 .event-card-image {
     width: 100%;
-    height: 220px; /* Increased from 180px */
-     background: linear-gradient(135deg, #a7a8bb 0%, #4f46e5 100%);
+    height: 220px; 
+    background: linear-gradient(135deg, #a7a8bb 0%, #4f46e5 100%); /* Keep gradient or adjust */
+    background-color: var(--neumorphic-bg); /* Fallback */
     flex-shrink: 0;
-    display: block; /* Added this */
-    object-fit: cover; /* Added this to ensure image covers the area without distortion */
+    display: block;
+    object-fit: cover; 
+    border: none; /* Remove border if any */
 }
 
 .event-card-body {
     padding: 16px;
     display: flex;
+    margin-top: 0.8rem;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    align-items: center; /* Center content horizontally */
+    flex-grow: 1; /* Allow body to grow and fill space */
 }
 
 .event-card-date-small {
-    font-size: 1.2rem; /* Increased from 0.85rem */
-    color: white;
-    margin-bottom: 4px;
-    text-align: center;
+    font-size: 1.2rem; 
+    color: var(--text-color); /* Use text color */
+    
+    text-align: start;
+    opacity: 0.8; /* Slightly dimmed for less emphasis */
 }
 
 .event-card-title-new {
-    font-size: 1.7rem; /* Increased from 1.2rem */
+    font-size: 1.7rem; 
     font-weight: 600;
-    color: white;
+    color: var(--text-color); /* Use text color */
     text-align: center;
-    margin: 0 0 50px 0; /* Added margin-bottom to create space for the button */
+    margin: 0 0 20px 0; /* Reduced margin-bottom to make space for button */
+    line-height: 1.3; /* Improve readability */
 }
 
 .view-details-btn {
     position: absolute;
-    bottom: 16px; /* Adjusted as needed */
+    bottom: 16px; /* Position at the bottom */
     left: 50%;
     transform: translateX(-50%);
-     background: linear-gradient(135deg, #a7a8bb 0%, #6d69b8 100%);
-    color: #ffffff;
-    padding: 8px 16px;
-    border-radius: 1.5rem; /* Consistent with other buttons */
+    background-color: var(--neumorphic-bg); /* Match card background */
+    color: var(--text-color); /* Use text color */
+    padding: 10px 20px; /* Slightly adjusted padding */
+    border-radius: 1.5rem; 
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.9rem;
-    transition: background-color 0.5s ease;
-    z-index: 10; /* Ensure button is above other content */
-
+    font-size: 0.95rem; /* Slightly larger font */
+    transition: all 0.3s ease;
+    z-index: 10; 
     
+    /* Neumorphic shadow for button */
+    box-shadow: 
+        3px 3px 7px var(--neumorphic-shadow-dark), 
+        -3px -3px 7px var(--neumorphic-shadow-light);
 }
-
-
 
 .view-details-btn:hover {
-    background-color: #5e1533;
-     
+    transform: translateX(-50%) translateY(-2px); /* Subtle lift */
+    box-shadow: 
+        inset 2px 2px 5px var(--neumorphic-shadow-dark), 
+        inset -2px -2px 5px var(--neumorphic-shadow-light); /* Pressed effect on hover */
+    color: var(--text-color);
+}
+
+.view-details-btn:active {
+    transform: translateX(-50%) translateY(1px); /* Deeper press on click */
+    box-shadow: 
+        inset 3px 3px 7px var(--neumorphic-shadow-dark), 
+        inset -3px -3px 7px var(--neumorphic-shadow-light);
 }
 
 
-
-
-
-/* Skeleton Loader */
+/* Skeleton Loader (Adjusted for Neumorphism) */
 .skeleton-card {
-    background: white;
-    border-radius: 1.5rem; /* Changed from 5rem */
+    background-color: var(--neumorphic-bg); /* Match background */
+    border-radius: 1.5rem; 
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    animation: shimmer 2s infinite;
+    
+    /* Neumorphic shadow for skeleton */
+    box-shadow: 
+        5px 5px 10px var(--neumorphic-shadow-dark), 
+        -5px -5px 10px var(--neumorphic-shadow-light);
+        
+    animation: shimmer 1.5s infinite; /* Keep shimmer animation */
+    height: 350px;
+    display: flex; /* Added for internal structure if needed */
+    flex-direction: column;
 }
 
 @keyframes shimmer {
     0% {
-        background-color: #e5e7eb;
+        box-shadow: 
+            5px 5px 10px var(--neumorphic-shadow-dark), 
+            -5px -5px 10px var(--neumorphic-shadow-light);
     }
     50% {
-        background-color: #f3f4f6;
+         box-shadow: 
+            inset 3px 3px 7px var(--neumorphic-shadow-dark), 
+            inset -3px -3px 7px var(--neumorphic-shadow-light); /* Inset shadow for shimmer */
     }
     100% {
-        background-color: #e5e7eb;
+         box-shadow: 
+            5px 5px 10px var(--neumorphic-shadow-dark), 
+            -5px -5px 10px var(--neumorphic-shadow-light);
     }
-}
-
-.skeleton-card {
-    height: 350px;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .event-card-title {
-        font-size: 1rem;
+    .event-card-title-new { /* Renamed from event-card-title */
+        font-size: 1.3rem; /* Adjusted size */
     }
 
-    .event-card-meta {
-        font-size: 0.85rem;
-    }
-
-    .event-card-description {
-        font-size: 0.85rem;
+    .event-card-date-small { /* Renamed from event-card-meta */
+        font-size: 1rem; /* Adjusted size */
     }
 }
 
 @media (max-width: 480px) {
     .event-card {
-        border-radius: 1.5rem; /* Changed from 0.5rem */
+        border-radius: 1.5rem; 
     }
 
-    .event-card-content {
+    .event-card-body {
         padding: 12px;
     }
 
@@ -146,27 +164,13 @@
         height: 150px;
     }
 
-    .event-card-title {
-        font-size: 0.95rem;
+    .event-card-title-new { /* Renamed from event-card-title */
+        font-size: 1.1rem; /* Adjusted size */
     }
 
-    .event-card-meta {
-        gap: 6px;
-        margin-bottom: 8px;
-    }
-
-    .event-card-footer {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-    }
-
-    .event-card-attendees {
-        justify-content: center;
-    }
-
-    .event-card-link {
-        text-align: center;
-        width: 100%;
+    .view-details-btn {
+        font-size: 0.9rem;
+        padding: 8px 16px;
     }
 }
+

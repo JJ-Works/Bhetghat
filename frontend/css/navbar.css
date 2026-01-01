@@ -16,14 +16,15 @@
 }
 
 body {
-    font-family: -apple-system BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: var(--text-dark);
     line-height: 1.6;
-    background-color: #ff451c;
-    background: url(../assets/trek.jpg);
+background: url(../assets/SL-120722-54440-04.jpg) center;
+    background-size: cover;
     background-repeat: no-repeat;
-    background-position:40%;
+    background-attachment: scroll;
 }
+
 
 @font-face {
     font-family: 'Custom';
@@ -33,34 +34,35 @@ body {
 /* Navbar Styles */
 .navbar {
     position: sticky;
-    top: 1em;
+    top: 1.5em; /* Slightly increased top margin for better spacing */
     left: 20vw;
     max-width: 60vw;
 
-    background: rgba(20, 10, 15, 0.6);
-    backdrop-filter: blur(1px);
-    -webkit-backdrop-filter: blur(12px);
+    background-color: var(--neumorphic-bg); /* Match body background */
+    border-radius: 1.5rem;
+    border: none; /* Remove border, rely on shadows */
 
-    border-radius: 1.5rem; /* Changed from 5rem */
-    border: 1px solid rgba(255, 255, 255, 0.08);
-
+    /* Neumorphic shadow effect: light shadow on top-left, dark on bottom-right */
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        /* Outer shadows */
+        5px 5px 10px var(--neumorphic-shadow-dark), /* Dark shadow */
+        -5px -5px 10px var(--neumorphic-shadow-light), /* Light shadow */
+        /* Inner shadow for pressed effect if needed, but for raised it's often just outer */
+        inset 2px 2px 5px var(--neumorphic-shadow-dark),
+        inset -2px -2px 5px var(--neumorphic-shadow-light);
 
     z-index: 1000;
+    padding: 0.5rem; /* Add some padding inside the navbar container */
 }
-
-
 
 .navbar-container {
     max-width: 60vw;
     margin: 0 auto;
-    padding: 1rem 2rem;
+    padding: 0.75rem 1.5rem; /* Adjusted padding */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem; /* Adjusted gap */
 }
 
 /* Logo */
@@ -71,11 +73,10 @@ body {
 
 .logo-text {
     font-family: 'Custom', sans-serif;
-    font-size: 2.5rem;
-    color: var(--white);
-    
+    font-size: 2.5rem; /* Slightly reduced size */
+    color: var(--text-color); /* Use a contrasting color */
+    text-shadow: 2px 2px 4px var(--neumorphic-shadow-dark); /* Subtle shadow for text */
 }
-
 
 /* Search Bar */
 .navbar-search {
@@ -83,49 +84,65 @@ body {
     max-width: 400px;
     display: flex;
     gap: 0.5rem;
-    
 }
 
 .search-input {
     flex: 1;
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 1.5rem; /* Changed from 5rem */
+    border: none; /* Remove border */
+    border-radius: 1.5rem;
     font-size: 0.9rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--neumorphic-bg); /* Match background */
+    color: var(--text-color);
+    outline: none;
+    
+    /* Neumorphic input shadow */
+    box-shadow: inset 2px 2px 5px var(--neumorphic-shadow-dark), 
+                inset -2px -2px 5px var(--neumorphic-shadow-light);
+    transition: box-shadow 0.3s ease;
 }
 
 .search-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    box-shadow: inset 3px 3px 7px var(--neumorphic-shadow-dark), 
+                inset -3px -3px 7px var(--neumorphic-shadow-light); /* Deeper press effect on focus */
 }
 
 .search-btn {
     padding: 0.75rem 1rem;
-     /* Added background color back */
-    color: var(--white);
+    color: var(--text-color); /* Use contrasting color */
     border: none;
     border-radius: 1.5rem;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
-    display: flex; /* Added for centering */
-    align-items: center; /* Added for centering */
-    justify-content: center; /* Added for centering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--neumorphic-bg); /* Match background */
+    
+    /* Neumorphic button shadow */
+    box-shadow: 5px 5px 10px var(--neumorphic-shadow-dark), 
+                -5px -5px 10px var(--neumorphic-shadow-light);
+    transition: all 0.3s ease;
 }
 
 .search-btn img {
-    width: 1.5em; /* Adjust size as needed */
-    
-    height: 1.5em; /* Adjust size as needed */
+    width: 1.5em;
+    height: 1.5em;
     object-fit: contain;
+    filter: brightness(0.6); /* Adjust icon color */
 }
-
 
 .search-btn:hover {
-    background-color: var(--white);
+    box-shadow: inset 2px 2px 5px var(--neumorphic-shadow-dark), 
+                inset -2px -2px 5px var(--neumorphic-shadow-light); /* Pressed effect on hover */
+    color: var(--text-color); /* Maintain color */
 }
+
+.search-btn:active {
+    box-shadow: inset 3px 3px 7px var(--neumorphic-shadow-dark), 
+                inset -3px -3px 7px var(--neumorphic-shadow-light); /* Deeper pressed effect on click */
+}
+
 
 /* Auth Section */
 .navbar-auth {
@@ -133,20 +150,31 @@ body {
     position: relative;
 }
 
-.login-btn {
+.login-btn, .signup-btn { /* Assuming signup-btn might exist or be added */
     padding: 0.75rem 1.5rem;
-    background-color: var(--primary-color);
-    color: var(--white);
     border: none;
-    border-radius: 1.5rem; /* Changed from 5rem */
+    border-radius: 1.5rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    background-color: var(--neumorphic-bg); /* Match background */
+    color: var(--text-color);
+    
+    /* Neumorphic button shadow */
+    box-shadow: 5px 5px 10px var(--neumorphic-shadow-dark), 
+                -5px -5px 10px var(--neumorphic-shadow-light);
 }
 
-.login-btn:hover {
-    background-color: var(--secondary-color);
+.login-btn:hover, .signup-btn:hover {
+    box-shadow: inset 2px 2px 5px var(--neumorphic-shadow-dark), 
+                inset -2px -2px 5px var(--neumorphic-shadow-light); /* Pressed effect on hover */
 }
+
+.login-btn:active, .signup-btn:active {
+    box-shadow: inset 3px 3px 7px var(--neumorphic-shadow-dark), 
+                inset -3px -3px 7px var(--neumorphic-shadow-light); /* Deeper pressed effect on click */
+}
+
 
 /* Profile Section */
 .profile-section {
@@ -157,20 +185,27 @@ body {
 }
 
 .profile-avatar {
-    width: 40px;
-    height: 40px;
+    width: 4rem;
+    height: 4rem;
     border-radius: 50%;
     cursor: pointer;
-    border: 2px solid var(--primary-color);
-    background-color: #10b981;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
+    border: none; /* Remove border, rely on shadows */
+     background: url("../assets/user.png") no-repeat center;
+    background-size: 50%;
+    background-attachment:fixed ;
+    transition: all 0.3s ease;
+    box-shadow: 5px 5px 10px var(--neumorphic-shadow-dark), 
+                -5px -5px 10px var(--neumorphic-shadow-light);
 }
 
 .profile-avatar:hover {
-    border-color: #059669;
-    background-color: #059669;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-    transform: scale(1.05);
+    box-shadow: inset 2px 2px 5px var(--neumorphic-shadow-dark), 
+                inset -2px -2px 5px var(--neumorphic-shadow-light); /* Pressed effect on hover */
+}
+
+.profile-avatar:active {
+    box-shadow: inset 3px 3px 7px var(--neumorphic-shadow-dark), 
+                inset -3px -3px 7px var(--neumorphic-shadow-light); /* Deeper pressed effect on click */
 }
 
 .profile-avatar-btn {
@@ -190,10 +225,14 @@ body {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: 1.5rem; /* Changed from 5rem */
-    box-shadow: var(--shadow-lg);
+    background-color: var(--neumorphic-bg); /* Match background */
+    border: none; /* Remove border */
+    border-radius: 1.5rem;
+    /* Neumorphic shadow for dropdown */
+    box-shadow: 
+        5px 5px 10px var(--neumorphic-shadow-dark), 
+        -5px -5px 10px var(--neumorphic-shadow-light);
+    
     min-width: 200px;
     padding: 0.5rem 0;
     display: none;
@@ -201,266 +240,46 @@ body {
     z-index: 1000;
 }
 
-.profile-section {
-    position: relative;
-}
-
 .profile-section:hover .profile-dropdown {
     display: block;
+    
 }
 
 .dropdown-item {
     display: block;
     width: 100%;
+    border-radius: 12px;
     padding: 0.75rem 1rem;
+
+   
     text-align: left;
     background: none;
     border: none;
-    color: var(--text-dark);
+    color: var(--text-color);
     text-decoration: none;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
     font-size: 0.9rem;
 }
 
 .dropdown-item:hover {
-    background-color: #f3f4f6;
+    background-color: rgba(163, 177, 198, 0.3); /* Subtle hover on dropdown items */
+    color: var(--text-color);
+
 }
 
 .dropdown-divider {
     margin: 0.5rem 0;
     border: none;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--neumorphic-shadow-dark); /* Subtle divider */
+    opacity: 0.5;
 }
 
 .logout-btn {
-    color: #ef4444;
+    color: #e74c3c; /* Red color for logout */
 }
 
 .logout-btn:hover {
-    background-color: #fee2e2;
+    background-color: #fbe9e7; /* Light red background on hover */
 }
 
-/* Hero Section */
-.hero {
-    min-height: calc(100vh - 200px);
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem 2rem;
-    text-align: center;
-    color: var(--white);
-}
-
-.hero-content {
-    max-width: 700px;
-    animation: fadeInUp 0.8s ease;
-}
-
-.hero-content h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-}
-
-.hero-content p {
-    font-size: 1.25rem;
-    margin-bottom: 2.5rem;
-    opacity: 0.95;
-    line-height: 1.8;
-}
-
-.hero-btn {
-    display: inline-block;
-    padding: 1rem 2.5rem;
-    background-color: var(--white);
-    color: var(--primary-color);
-    text-decoration: none;
-    border-radius: 1.5rem; /* Changed from 5rem */
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.hero-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-}
-
-.hero-btn:active {
-    transform: translateY(-1px);
-}
-
-/* Recommendations Section */
-.recommendations {
-    padding: 5rem 2rem;
-    background-color: #f9fafb;
-}
-
-.recommendations-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.section-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: var(--text-dark);
-}
-
-.section-header p {
-    font-size: 1.1rem;
-    color: var(--text-light);
-}
-
-.events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-}
-
-/* Skeleton Loading */
-.skeleton-card {
-    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    border-radius: 1.5rem; /* Changed from 5rem */
-    height: 400px;
-}
-
-@keyframes loading {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-/* Animation */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .navbar-container {
-        flex-wrap: wrap;
-        gap: 1rem;
-        padding: 1rem;
-    }
-
-    .navbar-search {
-        order: 3;
-        flex-basis: 100%;
-        max-width: 100%;
-    }
-
-    .navbar-logo {
-        order: 1;
-    }
-
-    .navbar-auth {
-        order: 2;
-    }
-
-    .footer-container {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .hero {
-        min-height: calc(100vh - 150px);
-        padding: 3rem 1rem;
-    }
-
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-
-    .hero-content p {
-        font-size: 1.1rem;
-    }
-
-    .hero-btn {
-        padding: 0.875rem 2rem;
-        font-size: 1rem;
-    }
-
-    .recommendations {
-        padding: 3rem 1rem;
-    }
-
-    .section-header h2 {
-        font-size: 2rem;
-    }
-
-    .events-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-container {
-        padding: 0.75rem;
-    }
-
-    .logo-placeholder {
-        width: 80px;
-        height: 40px;
-        font-size: 0.75rem;
-    }
-
-    .footer-container {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .hero {
-        min-height: auto;
-        padding: 2rem 1rem;
-    }
-
-    .hero-content h1 {
-        font-size: 2rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .hero-content p {
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .hero-btn {
-        padding: 0.75rem 1.5rem;
-        font-size: 0.95rem;
-    }
-
-    .recommendations {
-        padding: 2rem 1rem;
-    }
-
-    .section-header h2 {
-        font-size: 1.75rem;
-    }
-
-    .events-grid {
-        grid-template-columns: 1fr;
-    }
-}

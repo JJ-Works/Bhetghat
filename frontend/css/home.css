@@ -1,173 +1,247 @@
 /* Hero Section */
 .hero {
-    background: none;
-    color: white;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  color: var(--text-color); /* Use text color for better contrast */
+  height: 95vh;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  
+  text-align: center;
+  background: none; /* Remove old background */
 }
 @font-face {
-    font-family: 'Custom';
-    src: url('../assets/fonts/Transcity DEMO.otf') ;
+  font-family: "Custom";
+  src: url("../assets/fonts/Transcity DEMO.otf");
+}
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/Inter-VariableFont_opsz\,wght.ttf");
 }
 .hero-content {
-    max-width: 80vw;
-    margin-bottom: 10%;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-
+  max-width: 80vw;
+  margin-bottom: 10%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-content h1 {
-    font-size: 8rem;
-    margin-bottom: 1rem;
-    font-weight: 900;
-    text-shadow: #534e55 10px 3px 2px;
-    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 6rem; /* Slightly reduced font size for better scale */
+  margin-bottom: 1rem;
+  font-weight: 900;
+    letter-spacing: 0.45rem;
+  color: var(--text-color); /* Use text color */
+  font-family: Inter, sans-serif; /* Keep custom font */
+  text-shadow: 2px 2px 4px var(--neumorphic-shadow-dark); /* Subtle shadow */
 }
 
 .hero-content p {
-    font-size: 2rem;
-    max-width: 35vw;
-
-    margin-bottom: 2rem;
-    opacity: 1;
-    font-weight: 400;
+  font-size: 1.8rem; /* Slightly reduced font size */
+  max-width: 35vw;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+  font-weight: 400;
+  color: var(--text-color);
 }
 
 .hero-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  border-radius: 1.5rem; /* Consistent neumorphic radius */
+  text-decoration: none;
+  font-size: 1.3rem; /* Adjusted size */
+  font-weight: 700;
+  letter-spacing: 1px; /* Slightly reduced spacing */
+  transition: transform 0.6s ease, box-shadow 0.6s ease; /* Slowed transition */
 
-    display: inline-block;
+  background-color: var(--neumorphic-bg); /* Match body background */
+  color: var(--text-color);
 
-    background-color: white;
-
-    color: white;
-
-    padding: 12px 32px;
-
-    border-radius: 1rem;
-
-    text-decoration: none;
-
-    font-size: 1.4rem;
-
-    font-weight: 700;
-
-    letter-spacing: 2px;
-
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-    
-
-    background: rgba(20, 10, 15, 0.6);
-
-    backdrop-filter: blur(18px);
-
-    -webkit-backdrop-filter: blur(18px);
-
-    box-shadow: 5px 8px 2px rgba(236, 233, 233, 0.815);
-
+  /* Neumorphic shadow */
+  box-shadow: 5px 5px 10px var(--neumorphic-shadow-dark),
+    -5px -5px 10px var(--neumorphic-shadow-light);
 }
 
 .hero-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 10px 18px 12px rgba(0, 0, 0, 0.15);
-    
+  transform: translateY(-3px); /* Subtle lift on hover */
+  box-shadow: inset 2px 2px 5px var(--neumorphic-shadow-dark),
+    inset -2px -2px 5px var(--neumorphic-shadow-light); /* Pressed effect on hover */
+  color: var(--text-color);
+}
+
+.hero-btn:active {
+  transform: translateY(1px); /* Deeper press on click */
+  box-shadow: inset 3px 3px 7px var(--neumorphic-shadow-dark),
+    inset -3px -3px 7px var(--neumorphic-shadow-light);
 }
 
 /* Recommendations Section */
 .recommendations {
-    padding: 60px 20px;
-    background:url(../assets/649963.jpg);
-    background-color: black;
-    background-position: 30vw;
-    background-repeat: no-repeat ;
-    height: 100vh;
+  padding: 60px 20px;
+  background-color: var(--neumorphic-bg); /* Use global neumorphic background */
+  height: 110vh;
+  width: 100vw; /* Adjust height to content */
+  background: url(../assets/f5249257-1214-4453-ac78-4c893de02e4c.jpg) center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: local;
+  display: flex;
+align-items: center;
+justify-content: center;
 }
 
-
-
 .section-header {
-    text-align: center;
-    margin-bottom: 40px;
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .section-header h2 {
-    font-size: 3.5rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    margin-bottom: 10px;
-    font-weight: 700;
+  font-size: 3rem; /* Adjusted size */
+  font-family: "Open Sans", sans-serif; /* Use global font */
+  color: var(--text-color); /* Use text color */
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 
 .section-header p {
-    font-size: 1.5rem;
-    color: white;
+  font-size: 1.3rem; /* Adjusted size */
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
+/* Single row layout for events */
 .events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-    background: rgba(129, 123, 123, 0.527); /* Glassmorphism background */
-    box-shadow: 4.5px 7px 2px rgba(236, 233, 233, 0.8);
-    backdrop-filter: blur(5px); /* Glassmorphism blur */
-    /* -webkit-backdrop-filter: blur(5px); Safari support */
-    padding: 20px;
-    margin: 20px;
-    border-radius: 1.8rem; /* Consistent border-radius */
+    width: 60vw;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+     box-shadow:
+        /* Outer shadows */
+        5px 5px 10px var(--neumorphic-shadow-dark), /* Dark shadow */
+        -5px -5px 10px var(--neumorphic-shadow-light), /* Light shadow */
+        /* Inner shadow for pressed effect if needed, but for raised it's often just outer */
+        inset 2px 2px 5px var(--neumorphic-shadow-dark),
+        inset -2px -2px 5px var(--neumorphic-shadow-light);
+  padding: 20px;
+  margin: 20px;
+  border-radius: 1.8rem;
 }
 
+
+.events-grid-item {
+  /* Wrapper for each card to control width */
+  flex: 0 0 320px; /* Set base width for each card */
+  max-width: 320px; /* Ensure cards don't exceed this width */
+  box-sizing: border-box; /* Include padding/border in element's total width and height */
+}
+
+/* Media queries for responsive adjustments if needed, but single row is primary */
 @media (max-width: 1024px) {
-    .events-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-    }
+  .events-grid {
+    gap: 20px;
+  }
+  .events-grid-item {
+    flex: 0 0 280px; /* Adjust for smaller screens */
+    max-width: 280px;
+  }
 }
 
 @media (max-width: 768px) {
-    .events-grid {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 16px;
-    }
+  .events-grid {
+    gap: 16px;
+    padding: 15px;
+    margin: 15px;
+  }
+  .events-grid-item {
+    flex: 0 0 240px; /* Adjust for smaller screens */
+    max-width: 240px;
+  }
 
-    .hero-content h1 {
-        font-size: 2rem;
-    }
+  .hero-content h1 {
+    font-size: 4rem; /* Adjusted for smaller screens */
+  }
 
-    .section-header h2 {
-        font-size: 1.8rem;
-    }
+  .hero-content p {
+    font-size: 1.5rem; /* Adjusted for smaller screens */
+  }
+
+  .section-header h2 {
+    font-size: 2.5rem;
+  }
+  .section-header p {
+    font-size: 1.1rem;
+  }
 }
 
 @media (max-width: 480px) {
-    .events-grid {
-        grid-template-columns: 1fr;
-    }
+  .events-grid-item {
+    flex: 0 0 200px; /* Further adjust for very small screens */
+    max-width: 200px;
+  }
 
-    .hero-content h1 {
-        font-size: 1.5rem;
-    }
+  .hero-content h1 {
+    font-size: 2.5rem; /* Adjusted for smaller screens */
+  }
 
-    .hero-content p {
-        font-size: 1rem;
-    }
+  .hero-content p {
+    font-size: 1.2rem; /* Adjusted for smaller screens */
+  }
 
-    .section-header h2 {
-        font-size: 1.5rem;
-    }
+  .section-header h2 {
+    font-size: 2rem;
+  }
+  .section-header p {
+    font-size: 1rem;
+  }
 }
 
 /* Error message */
 .error-message {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 40px;
-    color: #ef4444;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #ef4444;
+  font-size: 1.1rem;
+}
+
+
+.hero-cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 4rem; /* space between cards */
+    margin-top: 10rem;
+}
+
+.hero-card {
+    width: 15rem;
+    
+    height: 15rem;
+    border-radius: 50%; /* makes it circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15); /* glass effect */
+    backdrop-filter: blur(10px); /* glass effect */
+    -webkit-backdrop-filter: blur(10px);
+
+    /* Neumorphic shadows */
+    box-shadow: 
+        8px 8px 20px rgba(0, 0, 0, 0.2),  /* dark shadow */
+        -8px -8px 20px rgb(242, 243, 247,0.7); /* light highlight */
+
+    font-weight: bold;
     font-size: 1.1rem;
+
+    color: #fff; /* text color for contrast */
+    transition: all 0.5s ease;
+}
+
+/* Hover effect to enhance neumorphic feel */
+.hero-card:hover {
+    box-shadow: 
+        4px 4px 15px rgba(0, 0, 0, 0.3),
+        -4px -4px 15px rgba(255, 255, 255, 0.5);
+    transform: translateY(-7px);
 }
