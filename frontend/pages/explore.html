@@ -15,7 +15,7 @@
     <header class="navbar">
         <div class="navbar-container">
             <!-- Logo -->
-            <a href="../index.html" class="navbar-logo" aria-label="Eventify Home">
+            <a href="../index.html" class="navbar-logo">
                 <div class="logo-text">Eventify</div>
             </a>
 
@@ -26,9 +26,8 @@
                     class="search-input" 
                     placeholder="Search events..."
                     id="searchInput"
-                    aria-label="Search events"
                 >
-                <button type="submit" class="search-btn" aria-label="Search">
+                <button type="submit" class="search-btn">
                     <img src="../assets/icons/search_5186446.png" alt="Search" />
                 </button>            </form>
 
@@ -36,17 +35,16 @@
             <div class="navbar-auth">
                 <button class="auth-btn login-btn" id="loginBtn" style="display: block;">Login</button>
                 <div class="profile-section" id="profileSection" style="display: none;">
-                    <button class="profile-avatar-btn" id="profileAvatarBtn" aria-label="Open profile menu" aria-haspopup="true" aria-expanded="false">
+                    <button class="profile-avatar-btn" id="profileAvatarBtn">
                         <div class="profile-avatar" id="profileAvatar"></div>
                     </button>
-                    <nav class="profile-dropdown" aria-label="Profile menu">
+                    <nav class="profile-dropdown">
                         <ul>
                             <li><a href="profile.html" class="dropdown-item">My Profile</a></li>
                             <li><a href="create-event.html" class="dropdown-item">Create Event</a></li>
-                            <li><a href="my-events.html" class="dropdown-item">My Events</a></li>
                             <li><a href="#settings" class="dropdown-item">Settings</a></li>
                         </ul>
-                        <hr class="dropdown-divider" aria-hidden="true">
+                        <hr class="dropdown-divider">
                         <ul>
                             <li><button class="dropdown-item logout-btn" id="logoutBtn">Logout</button></li>
                         </ul>
@@ -99,7 +97,7 @@
         </div>
     </main>
 
-    <footer class="footer" role="contentinfo">
+    <footer class="footer">
         <div class="footer-container">
             <section class="footer-section">
                 <h2>Eventify</h2>
@@ -107,7 +105,7 @@
             </section>
             <section class="footer-section">
                 <h3>Quick Links</h3>
-                <nav aria-label="Quick links">
+                <nav>
                     <ul>
                         <li><a href="../index.html">Home</a></li>
                         <li><a href="explore.html">Explore</a></li>

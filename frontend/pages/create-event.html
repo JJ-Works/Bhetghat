@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Create a new event">
+    <meta name="description" content="Create a new event on Eventify">
     <title>Create Event - Eventify</title>
     <link rel="stylesheet" href="../css/navbar.css">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/create-event.css">
 </head>
 <body>
     <header class="navbar">
         <div class="navbar-container">
             <!-- Logo -->
-            <a href="../index.html" class="navbar-logo" aria-label="Eventify Home">
+            <a href="../index.html" class="navbar-logo">
                 <div class="logo-text">Eventify</div>
             </a>
 
@@ -24,9 +25,8 @@
                     class="search-input" 
                     placeholder="Search events..."
                     id="searchInput"
-                    aria-label="Search events"
                 >
-                <button type="submit" class="search-btn" aria-label="Search">
+                <button type="submit" class="search-btn">
                     <span aria-hidden="true">🔍</span>
                 </button>
             </form>
@@ -35,17 +35,16 @@
             <div class="navbar-auth">
                 <button class="auth-btn login-btn" id="loginBtn" style="display: block;">Login</button>
                 <div class="profile-section" id="profileSection" style="display: none;">
-                    <button class="profile-avatar-btn" id="profileAvatarBtn" aria-label="Open profile menu" aria-haspopup="true" aria-expanded="false">
+                    <button class="profile-avatar-btn" id="profileAvatarBtn">
                         <div class="profile-avatar" id="profileAvatar"></div>
                     </button>
-                    <nav class="profile-dropdown" aria-label="Profile menu">
+                    <nav class="profile-dropdown">
                         <ul>
                             <li><a href="profile.html" class="dropdown-item">My Profile</a></li>
                             <li><a href="create-event.html" class="dropdown-item">Create Event</a></li>
-                            <li><a href="my-events.html" class="dropdown-item">My Events</a></li>
                             <li><a href="#settings" class="dropdown-item">Settings</a></li>
                         </ul>
-                        <hr class="dropdown-divider" aria-hidden="true">
+                        <hr class="dropdown-divider">
                         <ul>
                             <li><button class="dropdown-item logout-btn" id="logoutBtn">Logout</button></li>
                         </ul>
@@ -56,10 +55,72 @@
     </header>
 
     <main id="main-content">
-        <h1>Create a New Event</h1>
+        <div class="create-event-container">
+            <div class="step-indicator">
+                <div class="step-dot active" id="dot1"></div>
+                <div class="step-dot" id="dot2"></div>
+            </div>
+
+            <form id="createEventForm" onsubmit="submitEvent(event)">
+                <!-- Step 1: Location -->
+                <div id="step1" class="form-step active">
+                    <h2>Where is your event happening?</h2>
+                    
+                    <div class="form-group">
+                        <label for="eventLocation">City/Location</label>
+                        <select id="eventLocation" name="location">
+                            <option value="" disabled selected>Select a city</option>
+                            <option value="Kathmandu">Kathmandu</option>
+                            <option value="Pokhara">Pokhara</option>
+                            <option value="Lalitpur">Lalitpur</option>
+                            <option value="Bhaktapur">Bhaktapur</option>
+                            <option value="Biratnagar">Biratnagar</option>
+                            <option value="Dharan">Dharan</option>
+                            <option value="Birgunj">Birgunj</option>
+                            <option value="Butwal">Butwal</option>
+                            <option value="Hetauda">Hetauda</option>
+                            <option value="Janakpur">Janakpur</option>
+                        </select>
+                        <div class="error-message" id="step1Error"></div>
+                    </div>
+
+                    <div class="btn-group" style="justify-content: flex-end;">
+                        <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Details -->
+                <div id="step2" class="form-step">
+                    <h2>Tell us about your event</h2>
+
+                    <div class="form-group">
+                        <label for="eventTopic">Topic</label>
+                        <input type="text" id="eventTopic" name="topic" placeholder="e.g. Hiking, Coding, Music">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" id="eventName" name="name" placeholder="Give your event a catchy name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eventDescription">Description</label>
+                        <textarea id="eventDescription" name="description" placeholder="Describe what you'll be doing..."></textarea>
+                        <div class="char-count" id="charCount">0 characters (min 60)</div>
+                    </div>
+
+                    <div class="error-message" id="step2Error"></div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button type="submit" class="btn btn-primary">Create Event</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </main>
 
-    <footer class="footer" role="contentinfo">
+    <footer class="footer">
         <div class="footer-container">
             <section class="footer-section">
                 <h2>Eventify</h2>
@@ -67,7 +128,7 @@
             </section>
             <section class="footer-section">
                 <h3>Quick Links</h3>
-                <nav aria-label="Quick links">
+                <nav>
                     <ul>
                         <li><a href="../index.html">Home</a></li>
                         <li><a href="explore.html">Explore</a></li>
@@ -79,5 +140,6 @@
     </footer>
 
     <script src="../js/navbar.js"></script>
+    <script src="../js/create-event.js"></script>
 </body>
 </html>

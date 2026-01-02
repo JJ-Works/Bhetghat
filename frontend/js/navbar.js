@@ -45,7 +45,12 @@ function setupAuthListeners() {
     // Login button click
     if (loginBtn) {
         loginBtn.addEventListener('click', () => {
-            window.location.href = 'pages/login.html';
+            const currentPath = window.location.pathname;
+            if (currentPath.includes('/pages/')) {
+                window.location.href = 'login.html';
+            } else {
+                window.location.href = 'pages/login.html';
+            }
         });
     }
 
@@ -87,7 +92,12 @@ function logout() {
     checkAuthStatus();
 
     // Redirect to home page
-    window.location.href = 'index.html';
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('/pages/')) {
+        window.location.href = '../index.html';
+    } else {
+        window.location.href = 'index.html';
+    }
 }
 
 function setUserLoggedIn(token, userId, userName, userEmail, userInterest = null) {
