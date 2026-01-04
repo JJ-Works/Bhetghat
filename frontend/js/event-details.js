@@ -39,7 +39,19 @@ async function displayEventDetails(event) {
     // Update Image
     const imgElement = document.querySelector('.event-details-image img');
     if (imgElement) {
-        imgElement.src = event.image || event.imageUrl || '../assets/bgForcards.jpg';
+        // Fix Image Logic: Prioritize backend imageUrl
+        let imageSrc = '../assets/bgForcards.jpg';
+        if (event.imageUrl) {
+            imageSrc = event.imageUrl;
+        } else if (event.image) {
+            imageSrc = event.image;
+        }
+        imgElement.src = imageSrc;
+        
+        // Add error handler in case URL is broken
+        imgElement.onerror = () => {
+            imgElement.src = '../assets/bgForcards.jpg';
+        };
     }
 
     document.querySelector('.event-title').textContent = event.title || 'Untitled Event';
@@ -55,6 +67,28 @@ async function displayEventDetails(event) {
     document.querySelector('.event-date').textContent = `📅 ${displayDate}`;
     
     document.querySelector('.event-location').textContent = `📍 ${event.location || 'Location TBA'}`;
+
+    // Participant Count Logic (Hybrid: Backend + LocalStorage)
+    let backendCount = 0;
+    if (event.participants && Array.isArray(event.participants)) {
+        backendCount = event.participants.length;
+    }
+
+    // Check LocalStorage for accepted requests (that might not be in backend yet)
+    const allRequests = JSON.parse(localStorage.getItem('eventRequests') || '[]');
+    const localAccepted = allRequests.filter(req => req.eventId == event.id && req.status === 'accepted');
+    
+    // Simple merge: If backend has 0, trust local. If backend has data, assume it's accurate 
+    // BUT since we are in a hybrid state where 'Accept' only updates LocalStorage, we must prioritize LocalStorage or add to it.
+    // For this prototype, we'll assume they are distinct sets or that Local is the "latest" source of truth for new joins.
+    let count = Math.max(backendCount, localAccepted.length);
+    
+    // If the current user is the host, usually they aren't in the participants list, 
+    // but sometimes users want to see "1" if just they exist. 
+    // We'll stick to "Joined" users (excluding host usually, unless host joined their own event).
+
+    const max = event.maxParticipants ? ` / ${event.maxParticipants}` : '';
+    document.querySelector('.event-participants').textContent = `👥 ${count}${max} joined`;
 
     const joinBtn = document.querySelector('.join-btn');
     const joinReasonInput = document.getElementById('joinReason');
@@ -168,9 +202,11 @@ function checkRequestStatus(eventId, userId, btn, input) {
 }
 
 function updateButtonState(btn, input, status) {
-    // Remove any existing "Leave" button first to avoid duplicates
+    // Remove any existing dynamic buttons first to avoid duplicates
     const existingLeaveBtn = document.querySelector('.leave-btn');
+    const existingCancelBtn = document.querySelector('.cancel-btn');
     if (existingLeaveBtn) existingLeaveBtn.remove();
+    if (existingCancelBtn) existingCancelBtn.remove();
 
     if (status === 'accepted') {
         btn.textContent = 'Joined';
@@ -181,9 +217,7 @@ function updateButtonState(btn, input, status) {
         // Create Leave Button
         const leaveBtn = document.createElement('button');
         leaveBtn.textContent = 'Leave Event';
-        leaveBtn.className = 'leave-btn btn'; 
-        leaveBtn.style.backgroundColor = '#e74c3c';
-        leaveBtn.style.marginLeft = '10px';
+        leaveBtn.className = 'leave-btn'; 
         
         leaveBtn.onclick = leaveEvent;
         
@@ -195,6 +229,16 @@ function updateButtonState(btn, input, status) {
         btn.disabled = true;
         btn.style.backgroundColor = '#95a5a6';
         input.style.display = 'none';
+
+        // Create Cancel Request Button
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel Request';
+        cancelBtn.className = 'cancel-btn';
+        
+        cancelBtn.onclick = cancelRequest;
+        
+        btn.parentNode.appendChild(cancelBtn);
+
     } else if (status === 'rejected') {
         btn.textContent = 'Join Request Rejected'; 
         btn.disabled = true; 
@@ -206,6 +250,39 @@ function updateButtonState(btn, input, status) {
         btn.style.backgroundColor = ''; // Reset to default CSS
         input.style.display = 'block';
         input.value = '';
+    }
+}
+
+function cancelRequest() {
+    if (!confirm('Are you sure you want to cancel your join request?')) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventId = urlParams.get('id');
+    const userId = localStorage.getItem('userId');
+
+    if (!eventId || !userId) return;
+
+    // 1. Remove from eventRequests (localStorage)
+    let allRequests = JSON.parse(localStorage.getItem('eventRequests') || '[]');
+    const initialLength = allRequests.length;
+    allRequests = allRequests.filter(req => !(req.eventId == eventId && req.requesterId == userId));
+    
+    if (allRequests.length < initialLength) {
+        localStorage.setItem('eventRequests', JSON.stringify(allRequests));
+        
+        // 2. Remove from joinRequestsSent (legacy fallback)
+        let requestsSent = JSON.parse(localStorage.getItem('joinRequestsSent') || '[]');
+        requestsSent = requestsSent.filter(id => id != eventId);
+        localStorage.setItem('joinRequestsSent', JSON.stringify(requestsSent));
+
+        alert('Request cancelled successfully.');
+        
+        // Update UI immediately
+        const joinBtn = document.querySelector('.join-btn');
+        const joinReasonInput = document.getElementById('joinReason');
+        updateButtonState(joinBtn, joinReasonInput, null); // null status resets to default
+    } else {
+        alert('Error: Could not find your request.');
     }
 }
 

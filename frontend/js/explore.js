@@ -4,27 +4,22 @@ let filteredEvents = [];
 // Load events on page load
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Explore page loaded');
-
-    // Check for search query in URL (from Navbar redirect)
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get('query');
-    const locationQuery = urlParams.get('location');
-
-    if (searchQuery || locationQuery) {
-        // Perform backend search
-        searchEventsBackend(searchQuery, locationQuery);
+    
+    // Load all events first
+    loadAllEvents().then(() => {
+        // Check for search query in URL (from Navbar redirect)
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchQuery = urlParams.get('query');
         
-        // Update Search Input UI
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput && searchQuery) searchInput.value = searchQuery;
-        
-        const exploreTitle = document.getElementById('exploreTitle');
-        if (exploreTitle && searchQuery) exploreTitle.textContent = `${searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1)} Events`;
-
-    } else {
-        // Load all events
-        loadAllEvents();
-    }
+        if (searchQuery) {
+            // Update UI
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = searchQuery;
+            
+            // Execute Client-Side Search
+            performSearchLogic(searchQuery);
+        }
+    });
 
     setupFilterButtons();
     setupCreateEventButton();
@@ -44,8 +39,6 @@ async function loadAllEvents() {
                 } else if (Array.isArray(responseData)) {
                     backendEvents = responseData;
                 }
-            } else {
-                console.warn('Backend fetch failed, falling back to local storage.');
             }
         } catch (apiError) {
             console.warn('Backend unavailable:', apiError);
@@ -53,15 +46,21 @@ async function loadAllEvents() {
 
         // Merge with local storage (legacy support)
         const storedEvents = JSON.parse(localStorage.getItem('myEvents') || '[]');
-        allEvents = [...storedEvents.reverse(), ...backendEvents];
+        
+        // Combine them
+        const combinedEvents = [...storedEvents.reverse(), ...backendEvents];
+        
+        // Deduplicate by ID
+        const uniqueEvents = Array.from(new Map(combinedEvents.map(item => [item.id, item])).values());
+
+        allEvents = uniqueEvents;
+        filteredEvents = uniqueEvents;
         
         if (allEvents.length === 0) {
             showNoResults();
-            return;
+        } else {
+            displayEvents(filteredEvents);
         }
-
-        filteredEvents = [...allEvents];
-        displayEvents(filteredEvents);
 
     } catch (error) {
         console.error('Error loading events:', error);
@@ -69,25 +68,32 @@ async function loadAllEvents() {
     }
 }
 
-async function searchEventsBackend(query, location) {
-    try {
-        let url = 'http://localhost:8080/events/search?';
-        if (query) url += `query=${encodeURIComponent(query)}&`;
-        if (location) url += `location=${encodeURIComponent(location)}`;
+function performSearch(e) {
+    e.preventDefault();
+    const searchInput = document.getElementById('searchInput');
+    const query = searchInput.value.trim();
+    performSearchLogic(query);
+}
 
-        const response = await fetch(url);
-        if (response.ok) {
-            const events = await response.json();
-            allEvents = events; // Reset allEvents to search results
-            filteredEvents = events;
-            displayEvents(events);
-        } else {
-            console.error('Search failed');
-            showNoResults();
-        }
-    } catch (e) {
-        console.error("Error searching:", e);
+function performSearchLogic(query) {
+    const title = document.getElementById('exploreTitle');
+    const lowerQuery = query.toLowerCase();
+
+    if (query) {
+        if (title) title.textContent = `Search results for "${query}"`;
+        
+        filteredEvents = allEvents.filter(event => {
+            const matchTitle = event.title && event.title.toLowerCase().includes(lowerQuery);
+            const matchDesc = event.description && event.description.toLowerCase().includes(lowerQuery);
+            const matchLoc = event.location && event.location.toLowerCase().includes(lowerQuery);
+            return matchTitle || matchDesc || matchLoc;
+        });
+    } else {
+        if (title) title.textContent = 'Events';
+        filteredEvents = [...allEvents];
     }
+    
+    displayEvents(filteredEvents);
 }
 
 function displayEvents(events) {
@@ -103,11 +109,14 @@ function displayEvents(events) {
     noResults.style.display = 'none';
     grid.innerHTML = events.map(event => {
         const formattedDate = formatDate(event.eventDate || event.date);
+        
+        // Image Logic: Backend URL vs Local Base64 vs Default
+        // Explore page is in 'pages/' so assets are one level up '../assets/'
         let imageSrc = event.image || event.imageUrl || '../assets/bgForcards.jpg';
         
         return `
             <div class="event-card" data-event-id="${event.id}">
-                <img src="${imageSrc}" alt="Event Image" class="event-card-image">
+                <img src="${imageSrc}" alt="Event Image" class="event-card-image" onerror="this.src='../assets/bgForcards.jpg'">
                 <div class="event-card-body">
                     <p class="event-card-date-small">${formattedDate}</p>
                     <h3 class="event-card-title-new">${escapeHtml(event.title || 'Untitled Event')}</h3>
@@ -117,7 +126,7 @@ function displayEvents(events) {
         `;
     }).join('');
 
-    // Add click functionality to the entire event card
+    // Add click functionality
     document.querySelectorAll('.event-card').forEach(card => {
         card.addEventListener('click', (e) => {
             if (!e.target.classList.contains('view-details-btn')) {
@@ -127,27 +136,7 @@ function displayEvents(events) {
                 }
             }
         });
-        const viewDetailsBtn = card.querySelector('.view-details-btn');
-        if (viewDetailsBtn) {
-            viewDetailsBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        }
     });
-}
-
-function performSearch(e) {
-    e.preventDefault();
-    const searchQuery = document.getElementById('searchInput').value.trim();
-    
-    // If on explore page, just search directly
-    searchEventsBackend(searchQuery, null);
-    
-    // Update Title
-    const title = document.getElementById('exploreTitle');
-    if (searchQuery) {
-        title.textContent = `Search results for "${searchQuery}"`;
-    }
 }
 
 function setupFilterButtons() {
@@ -204,7 +193,6 @@ function formatDate(dateTimeString) {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(dateTimeString).toLocaleDateString('en-US', options);
     } catch (e) {
-        console.warn('Date format error:', e);
         return 'Date TBA';
     }
 }

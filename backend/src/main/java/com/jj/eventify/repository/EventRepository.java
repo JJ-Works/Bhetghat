@@ -16,4 +16,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "(:query IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(e.description) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +
             "(:location IS NULL OR LOWER(e.location) LIKE LOWER(CONCAT('%', :location, '%')))")
     List<Event> searchEvents(String query, String location);
+
+    List<Event> findByEventDateBefore(java.time.LocalDateTime dateTime);
 }

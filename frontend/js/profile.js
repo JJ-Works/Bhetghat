@@ -53,7 +53,8 @@ function loadJoinRequests() {
     const allRequests = JSON.parse(localStorage.getItem('eventRequests') || '[]');
     
     // Filter for requests where I am the owner of the event AND status is pending
-    const myRequests = allRequests.filter(req => req.ownerId === currentUserId && req.status === 'pending');
+    // FIX: loose equality for ID comparison (string vs number)
+    const myRequests = allRequests.filter(req => String(req.ownerId) === String(currentUserId) && req.status === 'pending');
 
     if (myRequests.length === 0) {
         requestsSection.style.display = 'none'; // Hide section if no requests
@@ -112,30 +113,73 @@ function handleRequest(requestId, action) {
     }
 }
 
-function loadJoinedEvents() {
+async function loadJoinedEvents() {
     const eventsContainer = document.getElementById('joinedEventsList');
     const currentUserId = localStorage.getItem('userId');
     
-    // 1. Get events created by me
-    const storedEvents = JSON.parse(localStorage.getItem('myEvents') || '[]');
-    const myCreatedEvents = storedEvents.filter(event => event.userId === currentUserId);
+    if (!currentUserId) {
+        eventsContainer.innerHTML = '<div class="no-events">Please login to view events.</div>';
+        return;
+    }
+
+    let myCreatedEvents = [];
     
+    // 1. Fetch events created by me from Backend
+    try {
+        const response = await fetch(`http://localhost:8080/users/${currentUserId}/events`);
+        if (response.ok) {
+            myCreatedEvents = await response.json();
+            myCreatedEvents = myCreatedEvents.map(e => ({
+                ...e,
+                image: e.imageUrl || e.image, 
+                date: new Date(e.eventDate).toLocaleDateString()
+            }));
+        }
+    } catch (e) {
+        console.error("Failed to fetch user events from backend", e);
+    }
+
     // 2. Get events I have joined (accepted requests)
+    const storedEvents = JSON.parse(localStorage.getItem('myEvents') || '[]');
     const allRequests = JSON.parse(localStorage.getItem('eventRequests') || '[]');
-    const myAcceptedRequests = allRequests.filter(req => req.requesterId === currentUserId && req.status === 'accepted');
+    const myAcceptedRequests = allRequests.filter(req => String(req.requesterId) === String(currentUserId) && req.status === 'accepted');
     
-    const myJoinedEvents = myAcceptedRequests.map(req => {
-        // Find the event details from storedEvents (or potentially backend in future)
-        return storedEvents.find(e => e.id == req.eventId);
-    }).filter(e => e !== undefined); // Filter out any undefineds if event was deleted
+    // Create a Promise array to fetch details for joined events
+    const joinedEventsPromises = myAcceptedRequests.map(async (req) => {
+        // A. Try finding in Local Storage
+        let evt = storedEvents.find(e => e.id == req.eventId);
+        
+        // B. Try finding in myCreatedEvents (unlikely if I joined it, but possible)
+        if (!evt) evt = myCreatedEvents.find(e => e.id == req.eventId);
+        
+        // C. Fetch from Backend (New logic for backend-created events)
+        if (!evt) {
+            try {
+                const res = await fetch(`http://localhost:8080/events/${req.eventId}`);
+                if (res.ok) {
+                    const backendEvt = await res.json();
+                    evt = {
+                        ...backendEvt,
+                        image: backendEvt.imageUrl || backendEvt.image,
+                        date: new Date(backendEvt.eventDate).toLocaleDateString()
+                    };
+                }
+            } catch (err) {
+                console.warn(`Could not fetch joined event details for ID ${req.eventId}`);
+            }
+        }
+        return evt;
+    });
+
+    const myJoinedEvents = (await Promise.all(joinedEventsPromises)).filter(e => e !== undefined && e !== null);
 
     // Combine created and joined events
-    // Using a Map to remove duplicates if any (though logic shouldn't allow overlap ideally)
     const combinedEvents = [...myCreatedEvents, ...myJoinedEvents];
+    
+    // Deduplicate by ID
     const uniqueEvents = Array.from(new Map(combinedEvents.map(item => [item.id, item])).values());
     
-    // Sort by date (newest first) - assuming ID is timestamp based or just reverse
-    const finalEvents = uniqueEvents.sort((a, b) => b.id - a.id);
+    const finalEvents = uniqueEvents.sort((a, b) => b.id - a.id); // Simple sort
     
     if (finalEvents.length === 0) {
         eventsContainer.innerHTML = '<div class="no-events">You haven\'t joined or created any events yet.</div>';
@@ -146,17 +190,25 @@ function loadJoinedEvents() {
     finalEvents.forEach(event => {
         const card = document.createElement('div');
         card.className = 'event-card';
-        // Make the whole card clickable
         card.onclick = () => window.location.href = `event-details.html?id=${event.id}`;
         card.style.cursor = 'pointer';
+        
+        const imageSrc = event.image || event.imageUrl || '../assets/bgForcards.jpg';
+        // Handle date formatting if it's not already formatted string
+        let displayDate = event.date;
+        if (!displayDate && event.eventDate) {
+             try { displayDate = new Date(event.eventDate).toLocaleDateString(); } catch(e) { displayDate = 'TBA'; }
+        } else if (!displayDate) {
+            displayDate = 'TBA';
+        }
 
         card.innerHTML = `
-            <div class="event-card-img" style="background-image: url('${event.image || '../assets/bgForcards.jpg'}')"></div>
+            <div class="event-card-img" style="background-image: url('${imageSrc}')"></div>
             <div class="event-card-body">
-                <div class="event-date">${event.date}</div>
+                <div class="event-date">${displayDate}</div>
                 <h3 class="event-title">${event.title}</h3>
                 <div class="event-location">
-                    <span>📍</span> ${event.location}
+                    <span>📍</span> ${event.location || 'Location TBA'}
                 </div>
             </div>
         `;
