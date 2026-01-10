@@ -54,10 +54,10 @@
         </div>
     </header>
 
-    <section id="recommendationsSection" class="container" style="padding: 4rem 0; display: none;">
-        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">Recommended For You</h2>
+    <section id="recommendationsSection" class="container" style="padding: 4rem 0;">
+        <h2 id="recommendationTitle" style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">Latest Events</h2>
         <div id="recommendationsGrid" class="events-grid">
-            <!-- Recommendations injected here -->
+            <p style="text-align: center; grid-column: 1/-1;">Loading awesome events...</p>
         </div>
     </section>
     
@@ -65,63 +65,78 @@
     <script src="assets/scripts/api.js"></script>
     <script src="assets/scripts/navbar.js"></script>
     <script>
-        // Recommendation Logic
+        // Simplified Recommendation Logic
         async function loadRecommendations() {
-            const section = document.getElementById('recommendationsSection');
             const grid = document.getElementById('recommendationsGrid');
-            const title = section.querySelector('h2');
-            const user = Auth.getUser();
+            const title = document.getElementById('recommendationTitle');
+            
+            console.log('Recommendation system initializing...');
+
+            if (typeof window.Auth === 'undefined' || typeof window.API === 'undefined') {
+                console.error('Core scripts (api.js) not loaded yet.');
+                grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Error: System core not loaded.</p>';
+                return;
+            }
+
+            const user = window.Auth.getUser();
 
             try {
-                const allEvents = await API.getAllEvents();
+                console.log('Fetching events from backend...');
+                const allEvents = await window.API.getAllEvents();
+                console.log('Events received:', allEvents);
                 
-                if (!allEvents || allEvents.length === 0) {
-                    section.style.display = 'none';
+                if (!allEvents || !Array.isArray(allEvents) || allEvents.length === 0) {
+                    console.log('No events found');
+                    grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">No events found yet. Be the first to create one!</p>';
                     return;
                 }
 
-                // Make section visible as long as there are events
-                section.style.display = 'block';
                 let displayEvents = [];
 
                 if (user && user.interests) {
-                    title.textContent = "Recommended For You";
                     const userInterests = user.interests.toLowerCase().split(',').map(i => i.trim());
                     displayEvents = allEvents.filter(event => {
-                        return userInterests.some(interest => event.title.toLowerCase().includes(interest));
+                        return userInterests.some(interest => 
+                            event.title.toLowerCase().includes(interest) || 
+                            (event.description && event.description.toLowerCase().includes(interest))
+                        );
                     });
-                } else {
-                    title.textContent = "Latest Events";
+                    
+                    if (displayEvents.length > 0) {
+                        title.textContent = "Recommended For You";
+                    }
                 }
 
-                // Fallback: If no recommendations found or for guests, fill with latest events
+                // Fallback/Fill: Fill with latest events if no matches or to make up a set of 4
                 if (displayEvents.length < 4) {
-                    // Sort by ID descending to get the newest ones
-                    const others = [...allEvents].sort((a, b) => b.id - a.id)
-                        .filter(e => !displayEvents.find(r => r.id === e.id));
-                    
-                    displayEvents = [...displayEvents, ...others.slice(0, 4 - displayEvents.length)];
+                    const latest = [...allEvents].sort((a, b) => b.id - a.id);
+                    for (const event of latest) {
+                        if (displayEvents.length >= 4) break;
+                        if (!displayEvents.find(e => e.id === event.id)) {
+                            displayEvents.push(event);
+                        }
+                    }
                 } else {
                     displayEvents = displayEvents.slice(0, 4);
                 }
 
                 grid.innerHTML = displayEvents.map(event => `
                     <div class="event-card" onclick="window.location.href='pages/event-details.html?id=${event.id}'">
-                        <div class="event-header" style="${event.imageUrl ? \`background-image: url('\${event.imageUrl}');\` : ''}">
+                        <div class="event-header" style="${event.imageUrl ? `background-image: url('${event.imageUrl}');` : ''}">
                         </div>
                         <div class="event-body">
-                            <span class="event-date">\${new Date(event.eventDate).toLocaleDateString()}</span>
-                            <h3 class="event-title">\${event.title}</h3>
+                            <span class="event-date">${new Date(event.eventDate).toLocaleDateString()}</span>
+                            <h3 class="event-title">${event.title}</h3>
                             <div class="event-info">
-                                <p>📍 \${event.location}</p>
+                                <p>📍 ${event.location}</p>
                             </div>
                         </div>
                     </div>
-                \`).join('');
+                `).join('');
 
             } catch (err) {
-                console.error('Failed to load events:', err);
-                section.style.display = 'none';
+                console.error('Failed to load recommendations:', err);
+                grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Failed to load events. Please check your connection.</p>';
             }
         }
 
@@ -129,9 +144,12 @@
 
         // Update hero button if logged in
         if (localStorage.getItem('user')) {
-            document.getElementById('heroActions').innerHTML = \`
-                <a href="pages/dashboard.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.2rem;">Go to Dashboard</a>
-            \`;
+            const heroActions = document.getElementById('heroActions');
+            if (heroActions) {
+                heroActions.innerHTML = `
+                    <a href="pages/dashboard.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.2rem;">Go to Dashboard</a>
+                `;
+            }
         }
     </script>
 </body>

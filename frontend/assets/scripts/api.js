@@ -1,6 +1,6 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
-const API = {
+window.API = {
     // Auth
     login: async (email, password) => {
         const response = await fetch(`${API_BASE_URL}/users/login`, {
@@ -134,12 +134,13 @@ const API = {
 };
 
 // Auth State Helper
-const Auth = {
+window.Auth = {
     getUser: () => JSON.parse(localStorage.getItem('user')),
     setUser: (user) => localStorage.setItem('user', JSON.stringify(user)),
     logout: () => {
         localStorage.removeItem('user');
-        window.location.href = '../index.html';
+        const isRoot = !window.location.pathname.includes('/pages/');
+        window.location.href = isRoot ? 'index.html' : '../index.html';
     },
     requireAuth: () => {
         if (!localStorage.getItem('user')) {
