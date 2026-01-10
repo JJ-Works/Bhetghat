@@ -1,29 +1,35 @@
 package com.jj.eventify.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Table(name = "messages")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Message {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user; // <-- add this if missing
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime timestamp;
 }

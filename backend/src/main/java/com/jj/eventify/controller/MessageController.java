@@ -1,49 +1,36 @@
 package com.jj.eventify.controller;
 
 import com.jj.eventify.model.Message;
-import com.jj.eventify.model.Event;
-import com.jj.eventify.model.User;
 import com.jj.eventify.service.MessageService;
-import com.jj.eventify.service.EventService;
-import com.jj.eventify.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/messages")
+@RequestMapping("/api/messages")
 public class MessageController {
 
     private final MessageService messageService;
-    private final EventService eventService;
-    private final UserService userService;
 
-    public MessageController(MessageService messageService,
-                             EventService eventService,
-                             UserService userService) {
+    public MessageController(MessageService messageService) {
         this.messageService = messageService;
-        this.eventService = eventService;
-        this.userService = userService;
     }
 
-    // Send a message in an event
-    @PostMapping("/send")
-    public Message sendMessage(@RequestParam Long eventId,
-                               @RequestParam Long userId,
-                               @RequestBody String content) {
-        Event event = eventService.getEventById(eventId);
-        User user = userService.getUserById(userId);
-
-        Message message = new Message();
-        message.setEvent(event);
-        message.setUser(user);
-        message.setContent(content);
-
-        return messageService.sendMessage(message);
+    @PostMapping
+    public Message sendMessage(@RequestBody Map<String, Object> payload) {
+        return messageService.sendMessage(
+            Long.valueOf(payload.get("eventId").toString()),
+            Long.valueOf(payload.get("senderId").toString()),
+            Long.valueOf(payload.get("receiverId").toString()),
+            payload.get("content").toString()
+        );
     }
 
-    // Get all messages for an event
-    @GetMapping("/event/{eventId}")
-    public List<Message> getMessagesByEvent(@PathVariable Long eventId) {
-        return messageService.getMessagesByEventId(eventId);
+    @GetMapping("/history")
+    public List<Message> getHistory(
+            @RequestParam Long eventId, 
+            @RequestParam Long user1, 
+            @RequestParam Long user2) {
+        return messageService.getHistory(eventId, user1, user2);
     }
 }

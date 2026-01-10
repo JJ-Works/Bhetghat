@@ -1,48 +1,38 @@
 package com.jj.eventify.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Getter @Setter
+@Table(name = "events")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Event {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String title;
+    private String description;
+    private String location;
+    private LocalDateTime eventDate;
+    private String imageUrl;
+
     @ManyToOne
-    @JoinColumn(name = "host_id", nullable = false)
+    @JoinColumn(name = "host_id")
     private User host;
 
-    @Column(nullable = false)
-    private String title;
-
-    private String description;
-    private String category;
-    private String location;
-
-    @Column(nullable = false)
-    private LocalDateTime eventDate;
-
-    private Integer maxParticipants;
-
-    private String imageUrl; // optional image path
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    // NEW: List of participants
     @ManyToMany
     @JoinTable(
-            name = "event_participants",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
+        name = "event_participants",
+        joinColumns = @JoinColumn(name = "event_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> participants;
-
-
+    private Set<User> participants = new HashSet<>();
 }
