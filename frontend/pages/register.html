@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Eventify</title>
+    <title>Sign Up - Eventify</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/styles/main.css">
     <link rel="stylesheet" href="../assets/styles/auth.css">
@@ -13,20 +13,29 @@
         <div class="auth-card">
             <div class="auth-header">
                 <a href="../index.html" class="logo" style="margin-bottom: 1rem; display: block;">Eventify</a>
-                <h1 class="auth-title">Welcome Back</h1>
-                <p class="text-muted">Don't have an account? <a href="register.html" class="auth-link">Sign Up</a></p>
+                <h1 class="auth-title">Create Account</h1>
+                <p class="text-muted">Already have an account? <a href="login.html" class="auth-link">Login</a></p>
             </div>
 
-            <form id="loginForm">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" id="name" class="form-input" required placeholder="John Doe">
+                </div>
                 <div class="form-group">
                     <label for="email" class="form-label">Email Address</label>
                     <input type="email" id="email" class="form-input" required placeholder="you@example.com">
                 </div>
                 <div class="form-group">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" class="form-input" required placeholder="••••••••">
+                    <input type="password" id="password" class="form-input" required placeholder="•••••••• (Min 6 chars)">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                <div class="form-group">
+                    <label for="interests" class="form-label">Interests / Hobbies</label>
+                    <input type="text" id="interests" class="form-input" required placeholder="e.g. Hiking, Music, Tech">
+                    <small class="text-muted">Separate multiple interests with commas.</small>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
             </form>
         </div>
     </div>

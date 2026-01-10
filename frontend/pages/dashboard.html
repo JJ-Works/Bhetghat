@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Eventify</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="../index.html" class="logo">Eventify</a>
+            <div id="navMenu">
+                <!-- Injected via navbar.js -->
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 2rem; padding-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1 style="font-size: 2rem; font-weight: 700;">Explore Events</h1>
+            <a href="create-event.html" class="btn btn-primary">+ Create Event</a>
+        </div>
+
+        <div id="eventsContainer" class="events-grid">
+            <!-- Events loaded via JS -->
+        </div>
+    </main>
+
+    <script src="../assets/scripts/api.js"></script>
+    <script src="../assets/scripts/navbar.js"></script>
+    <script src="../assets/scripts/app.js"></script>
+</body>
+</html>

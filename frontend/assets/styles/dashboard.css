@@ -1,0 +1,104 @@
+/* Dashboard Grid */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 3rem; /* Slightly more padding for the mild background */
+    background: #f8fafc;
+    border-radius: var(--radius);
+    border: 1px solid #f1f5f9;
+    
+    /* Fixed width relative to viewport as requested */
+    width: 60vw;
+    margin: 0 auto;
+    min-height: 50vh; /* Ensure the grid has a presence even with few items */
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 1024px) {
+    .events-grid {
+        width: 90vw;
+    }
+}
+
+.event-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer; /* Clickable cursor */
+    border: 1px solid transparent;
+    height: 80%; /* Ensure uniform height in grid */
+}
+
+.event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: var(--primary);
+}
+
+.event-header {
+    height: 180px; /* Taller image area */
+    background-color: #e0e7ff; /* Fallback color */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.event-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1; /* Allow expansion but not excessive empty space */
+}
+
+.event-date {
+    font-size: 0.85rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.event-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
+}
+
+.event-info {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit text lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.event-host {
+    display: flex;
+    align-items: center;
+    margin-top: auto; /* Push to bottom */
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.host-avatar {
+    width: 32px;
+    height: 32px;
+    background: #e0e7ff;
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 0.75rem;
+}

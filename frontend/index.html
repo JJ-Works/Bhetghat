@@ -3,142 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Eventify - Discover and join amazing events">
-    <title>Eventify</title>
-    <link rel="stylesheet" href="css/navbar.css">
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/cards.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/avatar.css">
+    <title>Eventify - Connect & Explore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <style>
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
+        }
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="navbar-container">
-            <!-- Logo -->
-            <a href="index.html" class="navbar-logo">
-                <div class="logo-text">Eventify</div>
-            </a>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo">Eventify</a>
+            <div id="navMenu">
+                <!-- Injected via navbar.js -->
+            </div>
+        </div>
+    </nav>
 
-            <!-- Search Bar -->
-            <form class="navbar-search" onsubmit="performSearch(event)">
-                <input 
-                    type="search" 
-                    class="search-input" 
-                    placeholder="Search events..."
-                    id="searchInput"
-                >
-                <button type="submit" class="search-btn">
-                    <img src="./assets/icons/search_5186446.png" alt="">
-                </button>
-            </form>
-
-            <!-- Auth Section -->
-            <div class="navbar-auth">
-                <button class="auth-btn login-btn" id="loginBtn" style="display: block;">Login</button>
-                <div class="profile-section" id="profileSection" style="display: none;">
-                    <button class="profile-avatar-btn" id="profileAvatarBtn">
-                        <div class="profile-avatar" id="profileAvatar"></div>
-                    </button>
-                    <nav class="profile-dropdown">
-                        <ul>
-                            <li><a href="pages/profile.html" class="dropdown-item">My Profile</a></li>
-                            <li><a href="pages/create-event.html" class="dropdown-item">Create Event</a></li>
-                            <li><a href="#settings" class="dropdown-item">Settings</a></li>
-                        </ul>
-                        <hr class="dropdown-divider">
-                        <ul>
-                            <li><button class="dropdown-item logout-btn" id="logoutBtn">Logout</button></li>
-                        </ul>
-                    </nav>
-                </div>
+    <header class="hero">
+        <div class="container">
+            <h1 class="hero-title">Discover Events<br>That Matter To You</h1>
+            <p class="hero-subtitle">Join a community of passionate individuals. Find local meetups, workshops, and gatherings in seconds.</p>
+            <div id="heroActions">
+                <a href="pages/register.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.2rem;">Get Started</a>
             </div>
         </div>
     </header>
 
-    <main id="main-content">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Discover Amazing Events</h1>
-                <p>Find, explore, and join events happening around you. Connect with people who share your interests.</p>
-                <a href="pages/explore.html" class="hero-btn">Explore Events</a>
+    <section id="recommendationsSection" class="container" style="padding: 4rem 0; display: none;">
+        <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">Recommended For You</h2>
+        <div id="recommendationsGrid" class="events-grid">
+            <!-- Recommendations injected here -->
+        </div>
+    </section>
+    
+    <link rel="stylesheet" href="assets/styles/dashboard.css">
+    <script src="assets/scripts/api.js"></script>
+    <script src="assets/scripts/navbar.js"></script>
+    <script>
+        // Recommendation Logic
+        async function loadRecommendations() {
+            const section = document.getElementById('recommendationsSection');
+            const grid = document.getElementById('recommendationsGrid');
+            const title = section.querySelector('h2');
+            const user = Auth.getUser();
+
+            try {
+                const allEvents = await API.getAllEvents();
                 
-                <!-- Added Cards -->
-                <div class="hero-cards-container">
-                    <div class="hero-card">
-                        <p>500+ <br>Events</p>
-                    </div>
-                    <div class="hero-card">
-                        <p>12k+ <br>Users</p>
-                    </div>
-                    <div class="hero-card">
-                        <p>50+ <br>Cities</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                if (!allEvents || allEvents.length === 0) {
+                    section.style.display = 'none';
+                    return;
+                }
 
-        <!-- Recommendations Section -->
-        <section class="recommendations">
-            <div class="recommendations-container">
-                <div class="section-header">
-                    <h2>Recommended Events</h2>
-                    <p>Events tailored just for you</p>
-                </div>
-                <div class="events-grid" id="eventsGrid">
-                    <!-- Cards will be loaded here by JavaScript -->
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </div>
-        </section>
-    </main>
+                // Make section visible as long as there are events
+                section.style.display = 'block';
+                let displayEvents = [];
 
-    <footer class="footer">
-        <div class="footer-container">
-            <section class="footer-section">
-                <h2>Eventify</h2>
-                <p>Discover and join amazing events.</p>
-            </section>
-            <section class="footer-section">
-                <h3>Quick Links</h3>
-                <nav>
-                    <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="pages/explore.html">Explore</a></li>
-                        <li><a href="#about">About</a></li>
-                    </ul>
-                </nav>
-            </section>
-            <section class="footer-section">
-                <h3>Follow Us</h3>
-                <nav>
-                    <ul>
-                        <li><a href="#facebook" title="Visit our Facebook page">Facebook</a></li>
-                        <li><a href="#twitter" title="Visit our Twitter profile">Twitter</a></li>
-                        <li><a href="#instagram" title="Visit our Instagram profile">Instagram</a></li>
-                    </ul>
-                </nav>
-            </section>
-            <section class="footer-section">
-                <h3>Legal</h3>
-                <nav>
-                    <ul>
-                        <li><a href="#privacy">Privacy Policy</a></li>
-                        <li><a href="#terms">Terms of Service</a></li>
-                    </ul>
-                </nav>
-            </section>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Eventify. All rights reserved.</p>
-        </div>
-    </footer>
+                if (user && user.interests) {
+                    title.textContent = "Recommended For You";
+                    const userInterests = user.interests.toLowerCase().split(',').map(i => i.trim());
+                    displayEvents = allEvents.filter(event => {
+                        return userInterests.some(interest => event.title.toLowerCase().includes(interest));
+                    });
+                } else {
+                    title.textContent = "Latest Events";
+                }
 
-    <script src="js/navbar.js"></script>
-    <script src="js/recommendations.js"></script>
+                // Fallback: If no recommendations found or for guests, fill with latest events
+                if (displayEvents.length < 4) {
+                    // Sort by ID descending to get the newest ones
+                    const others = [...allEvents].sort((a, b) => b.id - a.id)
+                        .filter(e => !displayEvents.find(r => r.id === e.id));
+                    
+                    displayEvents = [...displayEvents, ...others.slice(0, 4 - displayEvents.length)];
+                } else {
+                    displayEvents = displayEvents.slice(0, 4);
+                }
+
+                grid.innerHTML = displayEvents.map(event => `
+                    <div class="event-card" onclick="window.location.href='pages/event-details.html?id=${event.id}'">
+                        <div class="event-header" style="${event.imageUrl ? \`background-image: url('\${event.imageUrl}');\` : ''}">
+                        </div>
+                        <div class="event-body">
+                            <span class="event-date">\${new Date(event.eventDate).toLocaleDateString()}</span>
+                            <h3 class="event-title">\${event.title}</h3>
+                            <div class="event-info">
+                                <p>📍 \${event.location}</p>
+                            </div>
+                        </div>
+                    </div>
+                \`).join('');
+
+            } catch (err) {
+                console.error('Failed to load events:', err);
+                section.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadRecommendations);
+
+        // Update hero button if logged in
+        if (localStorage.getItem('user')) {
+            document.getElementById('heroActions').innerHTML = \`
+                <a href="pages/dashboard.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.2rem;">Go to Dashboard</a>
+            \`;
+        }
+    </script>
 </body>
 </html>
