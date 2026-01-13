@@ -152,33 +152,38 @@ function renderParticipants(event) {
 
     if (event.participants && event.participants.length > 0) {
         countDisplay.textContent = `${event.participants.length} going`;
-        participantList.innerHTML = event.participants.map(p => {
-            const isMe = currentUser && p.id === currentUser.id;
-            const isTargetHost = event.host && p.id === event.host.id;
-            
-            // Message button for participants
-            const messageBtn = (isParticipant && !isMe) 
-                ? `<button onclick="openChat(${p.id}, '${p.name}', ${event.id})" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:0.8rem; font-weight:600;">Message</button>` 
-                : '';
 
-            // Remove button for host
-            const removeBtn = (isHost && !isTargetHost)
-                ? `<button onclick="removeParticipantHandler(${event.id}, ${p.id}, '${p.name}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem; font-weight:600; margin-left:10px;">Remove</button>`
-                : '';
+        if (isHost || isParticipant) {
+            participantList.innerHTML = event.participants.map(p => {
+                const isMe = currentUser && p.id === currentUser.id;
+                const isTargetHost = event.host && p.id === event.host.id;
+                
+                // Message button for participants
+                const messageBtn = (isParticipant && !isMe) 
+                    ? `<button onclick="openChat(${p.id}, '${p.name}', ${event.id})" style="background:none; border:none; color:var(--primary); cursor:pointer; font-size:0.8rem; font-weight:600;">Message</button>` 
+                    : '';
 
-            return `
-                <li class="participant-item" style="justify-content: space-between;">
-                    <div style="display: flex; align-items: center;">
-                        <div class="participant-avatar">${p.name.charAt(0)}</div>
-                        <span>${p.name} ${isTargetHost ? '<span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px; margin-left:5px;">Host</span>' : ''}</span>
-                    </div>
-                    <div style="display:flex; gap:5px;">
-                        ${messageBtn}
-                        ${removeBtn}
-                    </div>
-                </li>
-            `;
-        }).join('');
+                // Remove button for host
+                const removeBtn = (isHost && !isTargetHost)
+                    ? `<button onclick="removeParticipantHandler(${event.id}, ${p.id}, '${p.name}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.8rem; font-weight:600; margin-left:10px;">Remove</button>`
+                    : '';
+
+                return `
+                    <li class="participant-item" style="justify-content: space-between;">
+                        <div style="display: flex; align-items: center;">
+                            <div class="participant-avatar">${p.name.charAt(0)}</div>
+                            <span>${p.name} ${isTargetHost ? '<span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px; margin-left:5px;">Host</span>' : ''}</span>
+                        </div>
+                        <div style="display:flex; gap:5px;">
+                            ${messageBtn}
+                            ${removeBtn}
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        } else {
+            participantList.innerHTML = '<li class="text-muted" style="font-style: italic;">Join the event to see the attendee list.</li>';
+        }
     } else {
         countDisplay.textContent = '0 going';
         participantList.innerHTML = '<li class="text-muted">No participants yet.</li>';
