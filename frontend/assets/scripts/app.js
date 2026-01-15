@@ -169,7 +169,7 @@ async function handleCreateEvent(e) {
         };
         
         await API.createEvent(eventData);
-        alert('Event Created Successfully!');
+        alert('Success! Event created.');
         window.location.href = 'dashboard.html';
     } catch (error) {
         alert(error.message);

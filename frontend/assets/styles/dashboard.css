@@ -31,7 +31,7 @@
     flex-direction: column;
     cursor: pointer; /* Clickable cursor */
     border: 1px solid transparent;
-    height: 80%; /* Ensure uniform height in grid */
+    height: 100%; /* Ensure uniform height in grid */
 }
 
 .event-card:hover {
@@ -41,7 +41,8 @@
 }
 
 .event-header {
-    height: 180px; /* Taller image area */
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Responsive height based on width */
     background-color: #e0e7ff; /* Fallback color */
     background-size: cover;
     background-position: center;
