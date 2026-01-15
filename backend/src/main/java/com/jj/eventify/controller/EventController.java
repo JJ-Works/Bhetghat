@@ -1,5 +1,6 @@
 package com.jj.eventify.controller;
 
+
 import com.jj.eventify.model.Event;
 import com.jj.eventify.model.JoinRequest;
 import com.jj.eventify.service.EventService;
