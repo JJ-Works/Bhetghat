@@ -11,7 +11,10 @@
     --radius: 12px;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-
+@font-face {
+    font-family: Raleway;
+    src: url(../fonts/Transcity\ DEMO.otf);
+}
 * {
     margin: 0;
     padding: 0;
@@ -163,13 +166,13 @@ body {
 /* Search Bar */
 .nav-search {
     flex: 1;
-    width: 15vw; /* Increased from 400px */
-    margin: 0 2rem;
+    margin: 0 6rem ;
     position: relative;
 }
 
 .search-input {
     width: 100%;
+    margin-left: 5rem;
     padding: 10px 15px 10px 40px;
     border: 1px solid #e5e7eb;
     border-radius: 20px;
@@ -187,7 +190,7 @@ body {
 
 .search-icon {
     position: absolute;
-    left: 12px;
+    left: 6rem;
     top: 50%;
     transform: translateY(-50%);
     width: 18px;
@@ -196,11 +199,27 @@ body {
     pointer-events: none;
 }
 
+@font-face {
+    font-family: noto;
+    src: url(../fonts/Noto_Emoji/static/NotoEmoji-Bold.ttf);
+}
+
 .logo {
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 2rem;
+    font-weight: 700;
     color: var(--primary);
     text-decoration: none;
+    font-family: Raleway;
+    letter-spacing: 0.25rem;
+    padding: 0em 0.4em 0em 0.48em;
+}
+
+.emoji{
+    font-family: noto;
+    margin:0 0.3em 0 0;
+    display: inline-block; /* required */
+    transform: rotate(270deg);
+    color: rgb(21, 94, 189);
 }
 
 .nav-links {
@@ -229,4 +248,67 @@ body {
     font-weight: 600;
 }
 
+/* Mobile Navbar Styles */
+.burger-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+.burger-btn img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.nav-inner {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+    .burger-btn {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: white;
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border-top: 1px solid #f3f4f6;
+        gap: 1rem;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-search {
+        margin: 0 10px;
+        width: 40px;
+        flex: 1;
+    }
+
+    .nav-link, .user-tag {
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+    
+    .nav-links .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
 

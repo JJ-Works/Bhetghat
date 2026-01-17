@@ -105,14 +105,6 @@ public class EventService {
 
     @Transactional
     public void deleteEvent(Long eventId) {
-        // 1. Delete all join requests for this event
-        joinRequestRepository.deleteByEventId(eventId);
-        
-        // 2. Delete all messages for this event
-        messageRepository.deleteByEventId(eventId);
-
-        // 3. Delete the event (participants relation is handled by JPA if owning side, but let's be sure)
-        // Event is owning side of participants (@JoinTable), so it should be fine.
         eventRepository.deleteById(eventId);
     }
 }

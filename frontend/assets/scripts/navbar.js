@@ -13,6 +13,8 @@ function renderNavbar() {
     const rootPrefix = isRoot ? '' : '../';
     const assetsPrefix = isRoot ? 'assets/' : '../assets/';
 
+    navMenu.style.flex = '1'; // Ensure it takes available space
+
     const searchBarHtml = `
         <div class="nav-search">
             <img src="${assetsPrefix}images/magnifying-glass-solid-full.svg" class="search-icon" alt="Search">
@@ -20,35 +22,49 @@ function renderNavbar() {
         </div>
     `;
 
+    let linksHtml = '';
     if (user) {
-        // Logged In Navbar
-        navMenu.innerHTML = `
-            <div style="display:flex; align-items:center; width:100%;">
-                ${searchBarHtml}
-                <div class="nav-links">
-                    <a href="${rootPrefix}index.html" class="nav-link">Home</a>
-                    <a href="${prefix}dashboard.html" class="nav-link">Explore</a>
-                    <a href="${prefix}create-event.html" class="nav-link">Create Event</a>
-                    <a href="${prefix}profile.html" class="nav-link">My Profile</a>
-                    <span class="user-tag">${user.name}</span>
-                    <button id="logoutBtn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;">Logout</button>
-                </div>
-            </div>
+        linksHtml = `
+            <a href="${rootPrefix}index.html" class="nav-link">Home</a>
+            <a href="${prefix}dashboard.html" class="nav-link">Explore</a>
+            <a href="${prefix}create-event.html" class="nav-link">Create Event</a>
+            <a href="${prefix}profile.html" class="nav-link">My Profile</a>
+            <span class="user-tag">${user.name}</span>
+            <button id="logoutBtn" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;">Logout</button>
         `;
-        document.getElementById('logoutBtn').addEventListener('click', Auth.logout);
     } else {
-        // Logged Out Navbar
-        navMenu.innerHTML = `
-            <div style="display:flex; align-items:center; width:100%;">
-                ${searchBarHtml}
-                <div class="nav-links">
-                    <a href="${rootPrefix}index.html" class="nav-link">Home</a>
-                    <a href="${prefix}dashboard.html" class="nav-link">Explore</a>
-                    <a href="${prefix}login.html" class="btn btn-secondary" style="padding: 8px 16px;">Login</a>
-                    <a href="${prefix}register.html" class="btn btn-primary" style="padding: 8px 16px;">Sign Up</a>
-                </div>
-            </div>
+        linksHtml = `
+            <a href="${rootPrefix}index.html" class="nav-link">Home</a>
+            <a href="${prefix}dashboard.html" class="nav-link">Explore</a>
+            <a href="${prefix}login.html" class="btn btn-secondary" style="padding: 8px 16px;">Login</a>
+            <a href="${prefix}register.html" class="btn btn-primary" style="padding: 8px 16px;">Sign Up</a>
         `;
+    }
+
+    navMenu.innerHTML = `
+        <div class="nav-inner">
+            ${searchBarHtml}
+            <button id="burgerBtn" class="burger-btn">
+                <img src="${assetsPrefix}images/burger-menu-svgrepo-com.svg" alt="Menu">
+            </button>
+            <div class="nav-links" id="navLinks">
+                ${linksHtml}
+            </div>
+        </div>
+    `;
+
+    // Burger Toggle
+    const burgerBtn = document.getElementById('burgerBtn');
+    const navLinks = document.getElementById('navLinks');
+    if (burgerBtn && navLinks) {
+        burgerBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    // Logout Listener
+    if (user) {
+        document.getElementById('logoutBtn').addEventListener('click', Auth.logout);
     }
 
     // Mark active link

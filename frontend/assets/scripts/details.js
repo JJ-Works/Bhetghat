@@ -135,11 +135,65 @@ async function checkStatusAndRenderButton(eventId, userId, container) {
 }
 
 async function renderRequestsCard(eventId) {
-    // ... existing renderRequestsCard code ...
+    try {
+        const requests = await API.getPendingRequests(eventId);
+        if (!requests || requests.length === 0) return;
+
+        const sidebar = document.querySelector('.details-sidebar');
+        const card = document.createElement('div');
+        card.className = 'sidebar-card';
+        card.innerHTML = `
+            <h4 style="margin-bottom: 1rem;">Join Requests (${requests.length})</h4>
+            <ul class="participant-list">
+                ${requests.map(req => `
+                    <li class="participant-item" style="justify-content: space-between;">
+                        <div style="display: flex; align-items: center;">
+                            <div class="participant-avatar">${req.user.name.charAt(0)}</div>
+                            <span>${req.user.name}</span>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button onclick="approveHandler(${req.id})" class="btn btn-primary" style="padding: 4px 8px; font-size: 0.8rem;">Accept</button>
+                            <button onclick="declineHandler(${eventId}, ${req.user.id})" class="btn btn-secondary" style="padding: 4px 8px; font-size: 0.8rem; background: #fee2e2; color: #991b1b; border:none;">Decline</button>
+                        </div>
+                    </li>
+                `).join('')}
+            </ul>
+        `;
+        
+        // Insert after the Action Card (which contains #actionContainer)
+        const actionContainer = document.getElementById('actionContainer');
+        if (actionContainer) {
+            const actionCard = actionContainer.closest('.sidebar-card');
+            actionCard.parentNode.insertBefore(card, actionCard.nextSibling);
+        } else {
+            sidebar.appendChild(card);
+        }
+
+    } catch (error) {
+        console.error('Failed to load requests', error);
+    }
 }
 
 async function approveHandler(requestId) {
-    // ... existing approveHandler code ...
+    if(!confirm('Approve this user to join?')) return;
+    try {
+        await API.approveRequest(requestId);
+        alert('User approved!');
+        window.location.reload();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function declineHandler(eventId, userId) {
+    if(!confirm('Decline this request?')) return;
+    try {
+        await API.leaveEvent(eventId, userId);
+        alert('Request declined.');
+        window.location.reload();
+    } catch(e) {
+        alert(e.message);
+    }
 }
 
 function renderParticipants(event) {
