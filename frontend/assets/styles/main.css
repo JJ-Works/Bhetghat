@@ -205,13 +205,15 @@ body {
 }
 
 .logo {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary);
-    text-decoration: none;
-    font-family: Raleway;
-    letter-spacing: 0.25rem;
-    padding: 0em 0.4em 0em 0.48em;
+   height: 5rem; 
+}
+
+.logo img {
+   height: 100%;
+   width: 100%;
+   border-radius: 50%;
+   
+    display: block; /* Remove extra space below image */
 }
 
 .emoji{
